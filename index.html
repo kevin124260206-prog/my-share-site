@@ -50,7 +50,14 @@
         
         .ctrl-panel { display: none; background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 25px; }
         .panel-title { font-size: 14px; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; }
-        .input-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+        
+        /* 彈窗內部的表單行樣式 */
+        .form-row { margin-bottom: 16px; width: 100%; text-align: left; box-sizing: border-box; }
+        .form-row label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #94a3b8; }
+        .form-row input, .form-row select, .form-row textarea { width: 100%; padding: 11px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #f8fafc; outline: none; font-size: 14px; box-sizing: border-box; }
+        .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: #38bdf8; }
+
+        .input-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; width: 100%; }
         .input-group input, .input-group select { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; color: inherit; flex-grow: 1; }
         textarea { width: 100%; background: rgba(0,0,0,0.3); color: inherit; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; height: 110px; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; font-size: 13px; }
         
@@ -79,12 +86,14 @@
         
         #console-log { margin-top: 20px; background: rgba(0,0,0,0.2); border-left: 4px solid #0ea5e9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; }
         
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
-        .modal-content { background: #1e293b; color: #f8fafc; border-radius: 16px; width: 90%; max-width: 580px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #334155; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        /* 獨立彈出視窗 (Modal) 樣式表 */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-content { background: #1e293b; color: #f8fafc; border-radius: 16px; width: 90%; max-width: 500px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #334155; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative; }
         .modal-header { padding: 18px; background: #131d31; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; font-weight: bold; font-size: 15px; }
-        .modal-body { padding: 25px; max-height: 350px; overflow-y: auto; line-height: 1.6; font-size: 14px; }
+        .modal-body { padding: 25px; max-height: 400px; overflow-y: auto; line-height: 1.6; font-size: 14px; box-sizing: border-box; }
         .modal-footer { padding: 15px 25px; background: #131d31; display: flex; flex-direction: column; border-top: 1px solid #334155; }
-        
+        .modal-close-trigger { background: none; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; font-weight: bold; padding: 0; }
+
         .page-footer-hub { max-width: 800px; width: 100%; text-align: center; padding: 20px; box-sizing: border-box; font-size: 13px; opacity: 0.85; line-height: 1.6; }
         .footer-notice-box { background: rgba(0, 0, 0, 0.2); padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 15px; font-size: 12px; border: 1px solid rgba(255,255,255,0.05); white-space: pre-wrap; }
         .copyright { font-size: 12px; font-weight: 600; letter-spacing: 0.5px; opacity: 0.7; }
@@ -97,7 +106,7 @@
         <span id="sys-status-label">🔋 正在對接中轉核心...</span>
         <div class="top-bar-btns">
             <button id="mgr-panel-btn" class="action-btn" style="display:none;" onclick="toggleControlPanel()">管理後台</button>
-            <button id="auth-btn" class="admin-btn" onclick="triggerAdminLogin()">管理員登入</button>
+            <button id="auth-btn" class="admin-btn" onclick="openLoginModal()">管理員登入</button>
         </div>
     </div>
 
@@ -126,10 +135,11 @@
                 <button class="action-btn" style="background:#10b981;" onclick="saveSysSettings()">發佈系統設定變更</button>
             </div>
             
-            <div style="font-size:12px; margin:15px 0 5px 0;">核發新管理員權限卡：</div>
+            <div style="font-size:12px; margin:15px 0 5px 0;">核發新管理員權限卡（含代表姓名）：</div>
             <div class="input-group">
-                <input type="text" id="new-admin-u" placeholder="新管理員帳號">
-                <input type="password" id="new-admin-p" placeholder="新管理員密碼">
+                <input type="text" id="new-admin-name" placeholder="代表姓名 (如: 張小明)">
+                <input type="text" id="new-admin-u" placeholder="登入帳號">
+                <input type="password" id="new-admin-p" placeholder="登入密碼">
                 <button style="background:#6366f1; color:white;" onclick="runRegisterSubAdmin()">核發註冊</button>
             </div>
             <div id="sub-admins-card-list" style="background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; max-height:110px; overflow-y:auto; font-size:12px; margin-top:5px;"></div>
@@ -203,6 +213,33 @@
     </div>
 </div>
 
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span style="color:#38bdf8; display:flex; align-items:center; gap:6px;">🔐 核心控制總署安全防禦核驗</span>
+            <button class="modal-close-trigger" onclick="closeModal('loginModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-row">
+                <label>代表姓名 (代表登入身分名稱)</label>
+                <input type="text" id="login-name-input" placeholder="請輸入您的真實姓名或稱呼...">
+            </div>
+            <div class="form-row">
+                <label>管理員安全帳號 (Username)</label>
+                <input type="text" id="login-user-input" placeholder="請輸入管理帳號...">
+            </div>
+            <div class="form-row">
+                <label>金鑰防禦密碼 (Password)</label>
+                <input type="password" id="login-pass-input" placeholder="請輸入管理密碼...">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="primary-submit-btn" style="background:#38bdf8; color:#0f172a; padding:12px; font-weight:bold; border-radius:8px;" onclick="runAdminLogin()">確認校準身分並登入</button>
+            <button style="background:transparent; color:#94a3b8; margin-top:8px;" onclick="closeModal('loginModal')">取消返回</button>
+        </div>
+    </div>
+</div>
+
 <div id="warnModal" class="modal">
     <div class="modal-content" style="max-width:480px;">
         <div class="modal-header" style="background:#7f1d1d; color:#fca5a5;">📢 系統安全維護移除預警</div>
@@ -244,6 +281,7 @@
     let currentIp = "0.0.0.0";
     let adminRole = ""; 
     let adminUser = ""; 
+    let adminRealName = "一般訪客"; // 用於記錄登入者的代表姓名
     let adminCtrlPassword = ""; 
     let globalFilesCache = [];
 
@@ -297,7 +335,7 @@
 
                 let rDiv = document.getElementById('reserve-box-list');
                 if (d.reservations.length === 0) {
-                    rDiv.innerHTML = `<span style="opacity:0.6;">目前無任何進行中維護預約項目。</span>`;
+                    rDiv.innerHTML = `<span style="opacity:0.6;">目前無 any 進行中維護預約項目。</span>`;
                 } else {
                     let html = "";
                     d.reservations.forEach(r => {
@@ -314,29 +352,57 @@
         } catch(e){}
     }
 
-    function triggerAdminLogin() {
+    // 彈窗控制開關
+    function openLoginModal() {
         if (adminRole) return logoutAdmin();
-        let u = prompt("管理員帳號:"); if(!u) return;
-        let p = prompt("管理員密碼:"); if(!p) return;
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "admin_login", username: u, password: p }) })
+        document.getElementById('loginModal').style.display = "flex";
+    }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
+
+    // 🛠️ 核心重構：彈出式視窗登入處理（加入代表姓名欄位驗證）
+    function runAdminLogin() {
+        let name = document.getElementById('login-name-input').value.trim();
+        let u = document.getElementById('login-user-input').value.trim();
+        let p = document.getElementById('login-pass-input').value.trim();
+        
+        if(!name || !u || !p) {
+            alert("❌ 姓名、帳號與密碼皆為必填項目，不可留空！");
+            return;
+        }
+
+        log("正在向主控核心同步驗證金鑰...");
+        fetch(GAS_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ action: "admin_login", name: name, username: u, password: p }) 
+        })
         .then(res => res.json()).then(data => {
             if (data.status === "success") {
                 adminRole = data.data.role;
                 adminUser = data.data.user;
+                adminRealName = data.data.realName; // 儲存後端傳回校對後的代表姓名
                 adminCtrlPassword = p;
      
                 document.getElementById('auth-btn').innerText = "登出安全模式";
                 document.getElementById('mgr-panel-btn').style.display = "inline-block";
-                document.getElementById('role-title').innerText = (adminRole === "supreme") ? `最高主權: ${adminUser}` : `受託管理員: ${adminUser}`;
+                document.getElementById('role-title').innerText = (adminRole === "supreme") ? `最高主權: ${adminRealName}` : `受託管理員: ${adminRealName}`;
                 document.getElementById('supreme-only-zone').style.display = (adminRole === "supreme") ? "block" : "none";
    
-                alert("解鎖完畢！已進入控制台後台模式。");
+                alert(`🎉 驗證完畢！歡迎 [${adminRealName}] 進入控制台後台模式。`);
+                closeModal('loginModal');
+                
+                // 清空輸入框防呆
+                document.getElementById('login-name-input').value = "";
+                document.getElementById('login-user-input').value = "";
+                document.getElementById('login-pass-input').value = "";
+
                 toggleControlPanel(true);
                 if(adminRole === "supreme") syncSubAdminList();
                 syncSystemStatus();
                 renderList(globalFilesCache);
-            } else { alert(data.message); }
-        });
+            } else { 
+                alert(data.message); 
+            }
+        }).catch(err => alert("連線核心伺服器失敗，請確認網路或 GAS 網址是否正確。"));
     }
 
     function toggleControlPanel(forceOpen = false) {
@@ -346,7 +412,7 @@
     }
 
     function logoutAdmin() {
-        adminRole = ""; adminUser = ""; adminCtrlPassword = "";
+        adminRole = ""; adminUser = ""; adminRealName = "一般訪客"; adminCtrlPassword = "";
         document.getElementById('auth-btn').innerText = "管理員登入";
         document.getElementById('mgr-panel-btn').style.display = "none";
         document.getElementById('control-panel').style.display = "none";
@@ -355,7 +421,9 @@
         renderList(globalFilesCache);
     }
 
+    // 🛠️ 精準對接 Bug 修復：系統設定發佈
     function saveSysSettings() {
+        if (!adminCtrlPassword) return alert("權限錯誤");
         let th = document.getElementById('theme-select').value;
         let nt = document.getElementById('edit-notice-text').value;
         fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "update_sys_settings", supremePassword: adminCtrlPassword, theme: th, notice: nt }) })
@@ -392,13 +460,16 @@
         });
     }
 
+    // 🛠️ 註冊子管理員核發（多帶入姓名欄位）
     function runRegisterSubAdmin() {
-        let nu = document.getElementById('new-admin-u').value;
-        let np = document.getElementById('new-admin-p').value;
-        if(!nu || !np) return alert("欄位不可留白！");
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "register_sub_admin", supremePassword: adminCtrlPassword, newUsername: nu, newPassword: np }) })
+        let name = document.getElementById('new-admin-name').value.trim();
+        let nu = document.getElementById('new-admin-u').value.trim();
+        let np = document.getElementById('new-admin-p').value.trim();
+        if(!name || !nu || !np) return alert("核發卡片欄位全部皆不可留白！");
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "register_sub_admin", supremePassword: adminCtrlPassword, realName: name, newUsername: nu, newPassword: np }) })
         .then(res => res.json()).then(data => {
             alert(data.message);
+            document.getElementById('new-admin-name').value = "";
             document.getElementById('new-admin-u').value = "";
             document.getElementById('new-admin-p').value = "";
             syncSubAdminList();
@@ -415,7 +486,7 @@
                 resData.data.forEach(sub => {
                     html += `
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
-                            <span>👤 帳號: <b>${sub.username}</b> (核發日: ${sub.createDate})</span>
+                            <span>👤 姓名: <b>${sub.realName}</b> (帳號: ${sub.username} | 核發日: ${sub.createDate})</span>
                             <button class="del-btn" style="padding:2px 8px; font-size:11px;" onclick="runDeleteSubAdmin('${sub.username}')">註銷</button>
                         </div>
                     `;
@@ -433,13 +504,13 @@
 
     function runAddReservation() {
         let sel = document.getElementById('reserve-duration');
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "add_reservation", username: adminUser, hours: sel.value, durationText: sel.options[sel.selectedIndex].text }) })
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "add_reservation", username: adminRealName, hours: sel.value, durationText: sel.options[sel.selectedIndex].text }) })
         .then(res => res.json()).then(data => { alert(data.message); syncSystemStatus(); });
     }
 
     function runDeleteReservation(resId) {
         if(!confirm("確定要手動撤銷此排程預約嗎？")) return;
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "delete_reservation", reserveId: resId, operator: adminUser }) })
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "delete_reservation", reserveId: resId, operator: adminRealName }) })
         .then(res => res.json()).then(data => { alert(data.message); syncSystemStatus(); });
     }
 
@@ -466,7 +537,7 @@
             const base64Data = e.target.result.split(',')[1];
             fetch(`${GAS_URL}?ip=${currentIp}`, {
                 method: 'POST',
-                body: JSON.stringify({ action: "upload_local", filename: file.name, mimeType: file.type, base64: base64Data, uploader: adminRole ? adminUser : "一般訪客" })
+                body: JSON.stringify({ action: "upload_local", filename: file.name, mimeType: file.type, base64: base64Data, uploader: adminRealName })
             })
             .then(res => res.json()).then(data => {
                 if(data.status === "success") {
@@ -476,7 +547,7 @@
                         progContainer.style.display = "none";
                         document.getElementById('localFile').value = "";
                         document.getElementById('file-tip').innerText = "📁 點擊選取中轉共享檔案";
-                        location.reload(); 
+                        loadPublicList();
                     }, 1500);
                 } else {
                     alert(data.message);
@@ -519,7 +590,7 @@
                 <div class="file-item">
                     <div class="file-info">
                         <div class="file-name">📄 ${item.name}</div>
-                        <div class="file-meta">上傳端: ${item.uploader} | 真實 IP: ${item.ip}</div>
+                        <div class="file-meta">上傳端人員: <b style="color:#38bdf8;">${item.uploader}</b> | 真實 IP: ${item.ip}</div>
                     </div>
                     <div class="btn-group">
                         <button class="view-btn" onclick="openPreview('${item.name}', '${googlePreviewUrl}')">預覽</button>
