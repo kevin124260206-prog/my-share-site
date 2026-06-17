@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <script>
-        // 1. 請在此貼上您「重新部署後」產生的最新 GAS 網頁應用程式 URL
-        const GAS_URL = "https://script.google.com/macros/library/d/1fXxxcHc1AUvHCqSEagokg8GJIW2Q19psLZuzKPRAlngv9-QwIig8lTU6/1";
+        // 1. 請在此貼上您最新部署產生的 GAS 網頁應用程式 URL (結尾必須是 /exec)
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwlCqMugoYly1yMCE1Oaz2znDhf0dbG0_lco7tPLQIlcRqFoaCtEcdeU5yRi93Hn_r5Bg/exec";
         
         // 2. 平台的名稱
         const PLATFORM_NAME = "資料共享平台";
@@ -193,7 +193,7 @@
 </div>
 
 <div class="page-footer-hub">
-    <div class="footer-notice-box" id="footer-notice-content">正在下載最新條款須知...</div>
+    <div class="footer-notice-box" id="footer-notice-content">⚠️ 正在與後端核心對接，若畫面持續未載入，請確認後端 GAS 的執行權限是否已設定為「任何人」並核准 DriveApp 權限！</div>
     <div class="copyright">
         © <span id="start-year-label"></span> - <span id="current-year"></span> <span id="owner-label"></span> All Rights Reserved.
     </div>
@@ -218,7 +218,7 @@
 <div id="noticeModal" class="modal">
     <div class="modal-content">
         <div class="modal-header" style="color:#38bdf8;">⚠️ 檔案共享傳輸安全與著作權法律協議</div>
-        <div id="display-notice-body" class="modal-body" style="white-space: pre-wrap; color:#e2e8f0;"></div>
+        <div id="display-notice-body" class="modal-body" style="white-space: pre-wrap; color:#e2e8f0;">讀取中...</div>
         <div class="modal-footer">
             <button style="background:#10b981; color:white; padding:12px; font-size:14px;" onclick="executeUploadWithProgress()">我同意，確認著作權屬實並開始上傳</button>
             <button style="background:transparent; color:#94a3b8; margin-top:8px;" onclick="closeNoticeModal()">不同意 (取消傳輸)</button>
@@ -294,7 +294,7 @@
 
                 let rDiv = document.getElementById('reserve-box-list');
                 if (d.reservations.length === 0) {
-                    rDiv.innerHTML = `<span style="opacity:0.6;">目前無任何進行中維護預約項目。</span>`;
+                    rDiv.innerHTML = `<span style="opacity:0.6;">目前無 any 進行中維護預約項目。</span>`;
                 } else {
                     let html = "";
                     d.reservations.forEach(r => {
@@ -307,8 +307,13 @@
                     });
                     rDiv.innerHTML = html;
                 }
+            } else {
+                alert("後端核心傳回錯誤：" + resData.message);
             }
-        } catch(e){}
+        } catch(e){
+            console.error(e);
+            log("🛑 無法連線至後端核心，請確認 GAS 部署網址是否正確，且已設定開放權限！");
+        }
     }
 
     function triggerAdminLogin() {
@@ -460,7 +465,6 @@
     }
     function closeNoticeModal() { document.getElementById('noticeModal').style.display = "none"; }
 
-    // 🌟 這裡會自動判定並打包「當前使用者名字」(adminUser) 送出
     function executeUploadWithProgress() {
         document.getElementById('noticeModal').style.display = "none";
         const file = document.getElementById('localFile').files[0];
@@ -485,7 +489,7 @@
                     filename: file.name, 
                     mimeType: file.type, 
                     base64: base64Data, 
-                    uploader: adminRole ? adminUser : "一般訪客" // 自動夾帶名字
+                    uploader: adminRole ? adminUser : "一般訪客" 
                 })
             })
             .then(res => res.json()).then(data => {
@@ -504,7 +508,7 @@
                     progContainer.style.display = "none";
                 }
             }).catch(err => {
-                alert("上傳失敗，請確認後端 GAS 權限已核准");
+                alert("💥 上傳失敗！請確認 GAS 後端授權程序是否已按「允許」，或檢查錯誤訊息彈窗。");
                 progContainer.style.display = "none";
             });
         };
@@ -518,7 +522,14 @@
         
         fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "fetch_list", date: selectedDate }) })
         .then(res => res.json()).then(resData => {
-            if(resData.status === "success") { globalFilesCache = resData.data; renderList(globalFilesCache); }
+            if(resData.status === "success") { 
+                globalFilesCache = resData.data; 
+                renderList(globalFilesCache); 
+            } else {
+                listDiv.innerHTML = `<p style="font-size:13px; color:#ef4444;">❌ 無法獲取清單：${resData.message}</p>`;
+            }
+        }).catch(err => {
+            listDiv.innerHTML = `<p style="font-size:13px; color:#ef4444;">❌ 核心通訊異常，請至無痕分頁重新讀取測試。</p>`;
         });
     }
 
@@ -541,7 +552,7 @@
                 <div class="file-item">
                     <div class="file-info">
                         <div class="file-name">📄 ${item.name}</div>
-                        <div class="file-meta">上傳端: <b>${item.uploader}</b> | 真實 IP: ${item.ip}</div>
+                        <div class="file-meta">上傳者: <b>${item.uploader}</b> | 真實 IP: ${item.ip}</div>
                     </div>
                     <div class="btn-group">
                         <button class="view-btn" onclick="openPreview('${item.name}', '${googlePreviewUrl}')">預覽</button>
