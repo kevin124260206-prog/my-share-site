@@ -9,7 +9,7 @@
         // ✍️ 【最上層：前端自訂參數填寫區】
         // ==========================================
         // 1. 請在此貼上您「重新部署後」產生的最新 GAS 網頁應用程式 URL
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbzXc0c_Va3ymZxoJbZSRQjUIoh2edh9xXleFRtxdRVsusf_L_Cm49m3TRtmxMzr5pQjFA/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwwvGsXDyb9nqLx3OVXLD3nlgYnV-KO8Ex-vB9NJWKEepLrcAZHfddxGZRDtB3ISXPxjg/exec";
         
         // 2. 平台的名稱
         const PLATFORM_NAME = "資料共享平台";
@@ -51,11 +51,10 @@
         .ctrl-panel { display: none; background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 25px; }
         .panel-title { font-size: 14px; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; }
         
-        /* 彈窗內部的表單行樣式 */
         .form-row { margin-bottom: 16px; width: 100%; text-align: left; box-sizing: border-box; }
         .form-row label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #94a3b8; }
-        .form-row input, .form-row select, .form-row textarea { width: 100%; padding: 11px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #f8fafc; outline: none; font-size: 14px; box-sizing: border-box; }
-        .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: #38bdf8; }
+        .form-row input { width: 100%; padding: 11px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #f8fafc; outline: none; font-size: 14px; box-sizing: border-box; }
+        .form-row input:focus { border-color: #38bdf8; }
 
         .input-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; width: 100%; }
         .input-group input, .input-group select { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; color: inherit; flex-grow: 1; }
@@ -86,7 +85,6 @@
         
         #console-log { margin-top: 20px; background: rgba(0,0,0,0.2); border-left: 4px solid #0ea5e9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; }
         
-        /* 獨立彈出視窗 (Modal) 樣式表 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-content { background: #1e293b; color: #f8fafc; border-radius: 16px; width: 90%; max-width: 500px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #334155; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative; }
         .modal-header { padding: 18px; background: #131d31; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; font-weight: bold; font-size: 15px; }
@@ -114,7 +112,7 @@
 
     <div id="control-panel" class="ctrl-panel">
         <div class="panel-title">
-            <span>⚙️ 核心權限群組控制面板 (<span id="role-title">未配置</span>)</span>
+            <span>⚙️ 核心權限控制面板 (<span id="role-title">未配置</span>)</span>
             <span style="color:#ef4444; cursor:pointer; font-weight:bold;" onclick="logoutAdmin()">[ 安全登出 ]</span>
         </div>
         
@@ -135,9 +133,8 @@
                 <button class="action-btn" style="background:#10b981;" onclick="saveSysSettings()">發佈系統設定變更</button>
             </div>
             
-            <div style="font-size:12px; margin:15px 0 5px 0;">核發新管理員權限卡（含代表姓名）：</div>
+            <div style="font-size:12px; margin:15px 0 5px 0;">核發新管理員權限卡：</div>
             <div class="input-group">
-                <input type="text" id="new-admin-name" placeholder="代表姓名 (如: 張小明)">
                 <input type="text" id="new-admin-u" placeholder="登入帳號">
                 <input type="password" id="new-admin-p" placeholder="登入密碼">
                 <button style="background:#6366f1; color:white;" onclick="runRegisterSubAdmin()">核發註冊</button>
@@ -146,7 +143,7 @@
         </div>
 
         <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.2);">
-            <div style="font-size:12px; color:#38bdf8; font-weight:bold; margin-bottom:8px;">🔒 帳戶安全更名與重設（免填舊密碼，需二次確認）：</div>
+            <div style="font-size:12px; color:#38bdf8; font-weight:bold; margin-bottom:8px;">🔒 帳戶安全更名與重設（免填舊密碼）：</div>
             
             <div class="input-group" style="margin-bottom: 10px;">
                 <input type="text" id="ch-new-username" placeholder="輸入全新帳號名稱">
@@ -162,7 +159,7 @@
         </div>
 
         <div>
-            <span style="font-size:12px; opacity:0.8;">🗓️ 設定預約維護排程項目：</span>
+            <span style="font-size:12px; opacity:0.8;">🗓️ 設定預約維護排程項目項目：</span>
             <div class="input-group" style="margin-top:5px;">
                 <select id="reserve-duration">
                     <option value="24">24 小時</option>
@@ -221,8 +218,8 @@
         </div>
         <div class="modal-body">
             <div class="form-row">
-                <label>代表姓名 (代表登入身分名稱)</label>
-                <input type="text" id="login-name-input" placeholder="請輸入您的真實姓名或稱呼...">
+                <label>代表姓名 (顯示於上傳、發佈項目身分)</label>
+                <input type="text" id="login-name-input" placeholder="請輸入您想要顯示的身分姓名...">
             </div>
             <div class="form-row">
                 <label>管理員安全帳號 (Username)</label>
@@ -281,7 +278,7 @@
     let currentIp = "0.0.0.0";
     let adminRole = ""; 
     let adminUser = ""; 
-    let adminRealName = "一般訪客"; // 用於記錄登入者的代表姓名
+    let adminRealName = "一般訪客"; // 這個值會在登入成功後，被設定為您輸入的代表姓名
     let adminCtrlPassword = ""; 
     let globalFilesCache = [];
 
@@ -352,34 +349,37 @@
         } catch(e){}
     }
 
-    // 彈窗控制開關
     function openLoginModal() {
         if (adminRole) return logoutAdmin();
         document.getElementById('loginModal').style.display = "flex";
     }
     function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
-    // 🛠️ 核心重構：彈出式視窗登入處理（加入代表姓名欄位驗證）
+    // 🛠️ 精準對接：登入不再強配姓名，姓名僅作純顯示
     function runAdminLogin() {
-        let name = document.getElementById('login-name-input').value.trim();
+        let nameInput = document.getElementById('login-name-input').value.trim();
         let u = document.getElementById('login-user-input').value.trim();
         let p = document.getElementById('login-pass-input').value.trim();
         
-        if(!name || !u || !p) {
-            alert("❌ 姓名、帳號與密碼皆為必填項目，不可留空！");
+        if(!nameInput) {
+            alert("❌ 請輸入代表姓名，這將用於記錄是誰發佈或上傳項目！");
+            return;
+        }
+        if(!u || !p) {
+            alert("❌ 請輸入管理帳號與密碼！");
             return;
         }
 
         log("正在向主控核心同步驗證金鑰...");
         fetch(GAS_URL, { 
             method: 'POST', 
-            body: JSON.stringify({ action: "admin_login", name: name, username: u, password: p }) 
+            body: JSON.stringify({ action: "admin_login", username: u, password: p }) 
         })
         .then(res => res.json()).then(data => {
             if (data.status === "success") {
                 adminRole = data.data.role;
                 adminUser = data.data.user;
-                adminRealName = data.data.realName; // 儲存後端傳回校對後的代表姓名
+                adminRealName = nameInput; // 🎯 核心更正：直接採用輸入的姓名作為目前的顯示身分
                 adminCtrlPassword = p;
      
                 document.getElementById('auth-btn').innerText = "登出安全模式";
@@ -390,7 +390,6 @@
                 alert(`🎉 驗證完畢！歡迎 [${adminRealName}] 進入控制台後台模式。`);
                 closeModal('loginModal');
                 
-                // 清空輸入框防呆
                 document.getElementById('login-name-input').value = "";
                 document.getElementById('login-user-input').value = "";
                 document.getElementById('login-pass-input').value = "";
@@ -421,7 +420,6 @@
         renderList(globalFilesCache);
     }
 
-    // 🛠️ 精準對接 Bug 修復：系統設定發佈
     function saveSysSettings() {
         if (!adminCtrlPassword) return alert("權限錯誤");
         let th = document.getElementById('theme-select').value;
@@ -460,16 +458,13 @@
         });
     }
 
-    // 🛠️ 註冊子管理員核發（多帶入姓名欄位）
     function runRegisterSubAdmin() {
-        let name = document.getElementById('new-admin-name').value.trim();
         let nu = document.getElementById('new-admin-u').value.trim();
         let np = document.getElementById('new-admin-p').value.trim();
-        if(!name || !nu || !np) return alert("核發卡片欄位全部皆不可留白！");
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "register_sub_admin", supremePassword: adminCtrlPassword, realName: name, newUsername: nu, newPassword: np }) })
+        if(!nu || !np) return alert("核發卡片欄位全部皆不可留白！");
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "register_sub_admin", supremePassword: adminCtrlPassword, newUsername: nu, newPassword: np }) })
         .then(res => res.json()).then(data => {
             alert(data.message);
-            document.getElementById('new-admin-name').value = "";
             document.getElementById('new-admin-u').value = "";
             document.getElementById('new-admin-p').value = "";
             syncSubAdminList();
@@ -486,7 +481,7 @@
                 resData.data.forEach(sub => {
                     html += `
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
-                            <span>👤 姓名: <b>${sub.realName}</b> (帳號: ${sub.username} | 核發日: ${sub.createDate})</span>
+                            <span>👤 管理員帳號: <b>${sub.username}</b> (核發日: ${sub.createDate})</span>
                             <button class="del-btn" style="padding:2px 8px; font-size:11px;" onclick="runDeleteSubAdmin('${sub.username}')">註銷</button>
                         </div>
                     `;
