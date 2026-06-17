@@ -9,7 +9,7 @@
         // ✍️ 【最上層：前端自訂參數填寫區】
         // ==========================================
         // 1. 請在此貼上您「重新部署後」產生的最新 GAS 網頁應用程式 URL
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbytcp8A0Vw00pxayWFXamRWkNB3tiZP8-qZZ2Aqb4J4I4GBeVulPru_HsUsd8CWcMANkw/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzXc0c_Va3ymZxoJbZSRQjUIoh2edh9xXleFRtxdRVsusf_L_Cm49m3TRtmxMzr5pQjFA/exec";
         
         // 2. 平台的名稱
         const PLATFORM_NAME = "資料共享平台";
@@ -30,429 +30,523 @@
         
         body.spring { background: linear-gradient(135deg, #e8f5e9 0%, #fce4ec 100%); color: #1b5e20; }
         body.summer { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: #f8fafc; }
-        body.autumn { background: linear-gradient(135deg, #fff3e0 0%, #d84315 100%); color: #3e2723; }
-        body.winter { background: linear-gradient(135deg, #eceff1 0%, #37474f 100%); color: #263238; }
+        body.autumn { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); color: #e65100; }
+        body.winter { background: linear-gradient(135deg, #eceff1 0%, #cfd8dc 100%); color: #263238; }
 
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; min-height: 100vh; display: flex; justify-content: center; align-items: center; margin: 0; padding: 20px; box-sizing: border-box; transition: background 0.5s ease; }
-        .main-shell { width: 100%; max-width: 800px; background: var(--card); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 40px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); position: relative; }
+        body { font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; transition: background 0.8s ease; }
+        .dashboard { max-width: 800px; width: 100%; background: var(--card); border-radius: 20px; padding: 30px; box-sizing: border-box; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.25); color: inherit; position: relative; margin-bottom: 20px; }
         
-        .top-status-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; font-size: 0.9rem; opacity: 0.8; }
-        .pool-progress-container { display: flex; align-items: center; gap: 10px; flex: 1; }
-        .pool-track { width: 120px; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; }
-        .pool-bar { height: 100%; width: 0%; background: #10b981; transition: width 0.6s ease; }
+        h1 { font-size: 26px; text-align: center; margin: 0 0 25px 0; letter-spacing: 1px; font-weight: 800; }
+        body.summer h1 { color: var(--accent); }
         
-        .ctrl-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: inherit; padding: 8px 16px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-weight: 500; }
-        .ctrl-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
-
-        .title-block { text-align: center; margin-bottom: 40px; }
-        .title-block h1 { margin: 0; font-size: 2.2rem; font-weight: 800; letter-spacing: -0.5px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.15); padding: 12px 15px; border-radius: 10px; margin-bottom: 25px; font-size: 13px; font-weight: 500; }
+        .top-bar-btns { display: flex; gap: 8px; }
         
-        .upload-area { border: 2px dashed rgba(255,255,255,0.2); border-radius: 16px; padding: 40px 20px; text-align: center; cursor: pointer; background: rgba(255,255,255,0.02); transition: all 0.2s ease; margin-bottom: 24px; }
-        .upload-area:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.04); }
-        .upload-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+        button { border: none; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s ease; }
+        button.admin-btn { background: rgba(255,255,255,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.2); }
+        button.action-btn { background: #6366f1; color: #fff; }
+        button.switch-btn { background: #2563eb; color: #fff; }
+        button.del-btn { background: #ef4444; color: white; }
         
-        .primary-submit-btn { width: 100%; padding: 16px; background: #38bdf8; border: none; border-radius: 14px; color: #0f172a; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2); }
-        .primary-submit-btn:hover { background: #7dd3fc; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3); }
-        .primary-submit-btn:disabled { background: rgba(255,255,255,0.1) !important; color: rgba(255,255,255,0.3) !important; cursor: not-allowed; box-shadow: none; }
-
-        .ip-tracker-banner { background: rgba(0,0,0,0.15); padding: 12px 20px; border-radius: 12px; font-size: 0.9rem; margin: 24px 0; display: flex; align-items: center; gap: 8px; border-left: 4px solid var(--accent); }
+        .ctrl-panel { display: none; background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 25px; }
+        .panel-title { font-size: 14px; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; }
+        .input-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+        .input-group input, .input-group select { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; color: inherit; flex-grow: 1; }
+        textarea { width: 100%; background: rgba(0,0,0,0.3); color: inherit; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; height: 110px; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; font-size: 13px; }
         
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; margin-bottom: 20px; }
-        .section-header h2 { margin: 0; font-size: 1.3rem; font-weight: 700; }
-        .archive-date-picker { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: inherit; padding: 6px 12px; outline: none; font-size: 0.9rem; cursor: pointer; }
-
-        .shared-list { display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto; margin-bottom: 40px; padding-right: 4px; }
-        .shared-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
-        .shared-item:hover { background: rgba(255,255,255,0.06); }
-        .item-meta { display: flex; flex-direction: column; gap: 4px; max-width: 65%; }
-        .item-title { font-weight: 600; font-size: 1.05rem; word-break: break-all; }
-        .item-subtext { font-size: 0.8rem; opacity: 0.6; }
+        .upload-section { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 12px; border: 2px dashed rgba(255,255,255,0.2); margin-bottom: 25px; text-align: center; }
+        .file-drop-zone { padding: 25px; background: rgba(0,0,0,0.1); cursor: pointer; border-radius: 10px; font-weight: 600; font-size: 14px; }
+        button.upload-btn { width: 100%; padding: 15px; background: #0ea5e9; color: white; font-size: 15px; border-radius: 10px; margin-top: 15px; box-shadow: 0 4px 12px rgba(14,165,233,0.3); }
         
-        .btn-group { display: flex; gap: 8px; }
-        .btn-group button { border: none; padding: 8px 16px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-        .view-btn { background: #38bdf8; color: #0f172a; }
-        .view-btn:hover { background: #7dd3fc; }
-        .download-btn { background: rgba(255,255,255,0.1); color: inherit; border: 1px solid rgba(255,255,255,0.1); }
-        .download-btn:hover { background: rgba(255,255,255,0.15); }
-        .del-btn { background: #ef4444; color: #ffffff; }
-        .del-btn:hover { background: #f87171; }
-
-        .terms-card { background: rgba(0,0,0,0.12); border-radius: 16px; padding: 24px; font-size: 0.9rem; line-height: 1.6; opacity: 0.85; border: 1px solid rgba(255,255,255,0.02); }
-        .terms-title { font-weight: 700; margin-bottom: 12px; color: var(--accent); font-size: 1rem; }
-        .terms-card div { white-space: pre-wrap; }
-
-        /*彈出視窗樣式*/
-        .modal-mask { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-shell { background: #1e293b; color: #f8fafc; width: 100%; max-width: 480px; border-radius: 20px; padding: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); position: relative; }
-        .modal-close-trigger { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; }
-        .modal-headline { font-size: 1.3rem; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
+        #progress-container { display: none; margin-top: 20px; background: rgba(0,0,0,0.2); border-radius: 10px; height: 10px; overflow: hidden; position: relative; }
+        #progress-bar { width: 0%; height: 100%; background: #10b981; transition: width 0.4s ease; }
+        #progress-text { font-size: 12px; text-align: center; margin-top: 8px; font-weight: bold; }
         
-        .form-row { margin-bottom: 20px; }
-        .form-row label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: #94a3b8; }
-        .form-row input, .form-row select, .form-row textarea { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; color: #f8fafc; outline: none; font-size: 0.95rem; box-sizing: border-box; }
-        .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: #38bdf8; }
-
-        .footer-credits { text-align: center; margin-top: 40px; font-size: 0.8rem; opacity: 0.5; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; }
-
-        /* 預覽 Modal 專用樣式 */
-        .preview-modal-shell { max-width: 90% !important; width: 90% !important; height: 85vh; display: flex; flex-direction: column; }
-        .preview-body { flex: 1; width: 100%; height: 100%; margin-top: 10px; background: #fff; border-radius: 8px; overflow: hidden; }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+        .list-section { margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; }
+        .list-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .list-title { font-size: 16px; font-weight: bold; }
+        .date-input { background: rgba(0,0,0,0.15); color: inherit; border: 1px solid rgba(255,255,255,0.2); padding: 7px 12px; border-radius: 8px; cursor: pointer; }
+        
+        .file-item { background: rgba(0,0,0,0.12); padding: 15px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.03); }
+        .file-info { flex-grow: 1; }
+        .file-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; word-break: break-all; }
+        .file-meta { font-size: 11px; opacity: 0.7; }
+        
+        .btn-group { display: flex; gap: 6px; }
+        .btn-group button { padding: 6px 12px; font-size: 12px; }
+        .view-btn { background: #0284c7; color: white; }
+        .download-btn { background: #10b981; color: white; }
+        
+        #console-log { margin-top: 20px; background: rgba(0,0,0,0.2); border-left: 4px solid #0ea5e9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .modal-content { background: #1e293b; color: #f8fafc; border-radius: 16px; width: 90%; max-width: 580px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #334155; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+        .modal-header { padding: 18px; background: #131d31; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; font-weight: bold; font-size: 15px; }
+        .modal-body { padding: 25px; max-height: 350px; overflow-y: auto; line-height: 1.6; font-size: 14px; }
+        .modal-footer { padding: 15px 25px; background: #131d31; display: flex; flex-direction: column; border-top: 1px solid #334155; }
+        
+        .page-footer-hub { max-width: 800px; width: 100%; text-align: center; padding: 20px; box-sizing: border-box; font-size: 13px; opacity: 0.85; line-height: 1.6; }
+        .footer-notice-box { background: rgba(0, 0, 0, 0.2); padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 15px; font-size: 12px; border: 1px solid rgba(255,255,255,0.05); white-space: pre-wrap; }
+        .copyright { font-size: 12px; font-weight: 600; letter-spacing: 0.5px; opacity: 0.7; }
     </style>
 </head>
-<body class="summer">
+<body>
 
-    <div class="main-shell">
-        <div class="top-status-bar">
-            <div class="pool-progress-container">
-                <span>雲端儲存負載：</span>
-                <div class="pool-track"><div class="pool-bar" id="pool-usage-bar"></div></div>
-                <span id="pool-usage-text">0.0%</span>
-            </div>
-            <button class="ctrl-btn" id="ctrl-hub-trigger" onclick="openLoginModal()">最高指揮中心</button>
+<div class="dashboard">
+    <div class="top-bar">
+        <span id="sys-status-label">🔋 正在對接中轉核心...</span>
+        <div class="top-bar-btns">
+            <button id="mgr-panel-btn" class="action-btn" style="display:none;" onclick="toggleControlPanel()">管理後台</button>
+            <button id="auth-btn" class="admin-btn" onclick="triggerAdminLogin()">管理員登入</button>
         </div>
+    </div>
 
-        <div class="title-block">
-            <h1 id="platform-title-text">資料共享平台</h1>
+    <h1 id="main-title">📁 資料共享平台</h1>
+
+    <div id="control-panel" class="ctrl-panel">
+        <div class="panel-title">
+            <span>⚙️ 核心權限群組控制面板 (<span id="role-title">未配置</span>)</span>
+            <span style="color:#ef4444; cursor:pointer; font-weight:bold;" onclick="logoutAdmin()">[ 安全登出 ]</span>
         </div>
-
-        <input type="file" id="file-selector" style="display: none;" onchange="onFileSelected(this)">
         
-        <div class="upload-area" onclick="document.getElementById('file-selector').click()" id="drop-zone">
-            <span class="upload-icon">☁️</span>
-            <p id="upload-status-text">點擊此處選擇要共享的中轉檔案</p>
-        </div>
-
-        <button class="primary-submit-btn" id="upload-trigger-btn" onclick="startSecureUpload()" disabled>
-            同意規範並安全上傳
-        </button>
-
-        <div class="ip-tracker-banner">
-            <span>🚀 偵測到您的傳輸來源 IP : <strong id="detected-ip">探測中...</strong></span>
-        </div>
-
-        <div class="section-header">
-            <h2>📂 今日中轉共享檔案庫</h2>
-            <input type="date" class="archive-date-picker" id="target-archive-date" onchange="loadSharedList()">
-        </div>
-
-        <div class="shared-list" id="shared-list-box">
-            </div>
-
-        <div class="terms-card">
-            <div class="terms-title">📜 【 使用條款 與 法律免責規範 】</div>
-            <div id="notice-text-box">載入中...</div>
-        </div>
-
-        <div class="footer-credits" id="footer-text">
-            &copy; 2025 施柏謙 All Rights Reserved.
-        </div>
-    </div>
-
-    <div class="modal-mask" id="loginModal">
-        <div class="modal-shell">
-            <button class="modal-close-trigger" onclick="closeModal('loginModal')">&times;</button>
-            <div class="modal-headline">🔐 安全核驗</div>
-            <div class="form-row">
-                <label>請輸入管理權限安全金鑰 (Password)</label>
-                <input type="password" id="admin-pass-input" placeholder="請輸入密碼...">
-            </div>
-            <div style="display: flex; gap: 12px; margin-top: 30px;">
-                <button class="ctrl-btn" style="flex: 1; padding: 12px;" onclick="closeModal('loginModal')">取消</button>
-                <button class="primary-submit-btn" style="flex: 1; padding: 12px; box-shadow: none;" onclick="runAdminLogin()">確認登入</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-mask" id="controlModal">
-        <div class="modal-shell" style="max-width: 550px;">
-            <button class="modal-close-trigger" onclick="closeModal('controlModal')">&times;</button>
-            <div class="modal-headline">⚙️ 最高核心指揮控制中心</div>
+        <div id="supreme-only-zone" style="display:none; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.2);">
+            <div style="font-size:12px; color:#f59e0b; font-weight:bold; margin-bottom:10px;">👑 最高主權者配置特區：</div>
             
-            <div class="form-row">
-                <label>當前站點視覺季節主題風格 (Theme)</label>
+            <label style="font-size:12px; display:block; margin-bottom:5px;">線上修訂訪客上傳須知內容（同步更新頁尾）：</label>
+            <textarea id="edit-notice-text" placeholder="請輸入欲顯示的免責與著作權協議條款..."></textarea>
+      
+            <label style="font-size:12px; display:block; margin-bottom:5px;">更換控制台網站季節背景顏色：</label>
+            <div class="input-group">
                 <select id="theme-select">
-                    <option value="spring">春季風格 (優雅粉綠)</option>
-                    <option value="summer">夏季風格 (極致深藍藍黑)</option>
-                    <option value="autumn">秋季風格 (落葉暖橘)</option>
-                    <option value="winter">冬季風格 (冰雪沉穩灰)</option>
+                    <option value="spring">🌸 春天風格 (粉嫩新綠)</option>
+                    <option value="summer">☀️ 夏天風格 (極客星空藍)</option>
+                    <option value="autumn">🍁 秋天風格 (溫馨楓葉橘)</option>
+                    <option value="winter">❄️ 冬天風格 (高雅質感灰)</option>
                 </select>
+                <button class="action-btn" style="background:#10b981;" onclick="saveSysSettings()">發佈系統設定變更</button>
             </div>
             
-            <div class="form-row">
-                <label>公告須知與法律免責內容修改 (Notice)</label>
-                <textarea id="edit-notice-text" rows="8" style="resize: vertical; font-family: inherit;"></textarea>
+            <div style="font-size:12px; margin:15px 0 5px 0;">核發新管理員權限卡：</div>
+            <div class="input-group">
+                <input type="text" id="new-admin-u" placeholder="新管理員帳號">
+                <input type="password" id="new-admin-p" placeholder="新管理員密碼">
+                <button style="background:#6366f1; color:white;" onclick="runRegisterSubAdmin()">核發註冊</button>
+            </div>
+            <div id="sub-admins-card-list" style="background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; max-height:110px; overflow-y:auto; font-size:12px; margin-top:5px;"></div>
+        </div>
+
+        <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.2);">
+            <div style="font-size:12px; color:#38bdf8; font-weight:bold; margin-bottom:8px;">🔒 帳戶安全更名與重設（免填舊密碼，需二次確認）：</div>
+            
+            <div class="input-group" style="margin-bottom: 10px;">
+                <input type="text" id="ch-new-username" placeholder="輸入全新帳號名稱">
+                <input type="text" id="ch-new-username-confirm" placeholder="再次輸入全新帳號確認">
+                <button class="action-btn" style="background: #eab308;" onclick="runChangeUsername()">變更帳號名</button>
             </div>
 
-            <div style="border-top: 1px dashed rgba(255,255,255,0.1); margin-top: 25px; padding-top: 20px; display: flex; justify-content: space-between; align-items: center;">
-                <button class="ctrl-btn" style="background: #ef4444; color: #fff;" onclick="runAdminLogout()">登出管理端</button>
-                <button class="primary-submit-btn" style="width: auto; padding: 12px 24px; box-shadow: none;" onclick="saveSysSettings()">發佈系統設定變更</button>
+            <div class="input-group">
+                <input type="password" id="ch-new-password" placeholder="輸入全新密碼">
+                <input type="password" id="ch-new-password-confirm" placeholder="再次輸入全新密碼確認">
+                <button class="action-btn" style="background: #ec4899;" onclick="runChangePasswordOnly()">變更密碼</button>
             </div>
+        </div>
+
+        <div>
+            <span style="font-size:12px; opacity:0.8;">🗓️ 設定預約維護排程項目：</span>
+            <div class="input-group" style="margin-top:5px;">
+                <select id="reserve-duration">
+                    <option value="24">24 小時</option>
+                    <option value="48">2 天</option>
+                    <option value="72">3 天</option>
+                    <option value="96">4 天</option>
+                    <option value="120">5 天</option>
+                    <option value="144">6 天</option>
+                    <option value="168">7 天</option>
+                </select>
+                <button class="switch-btn" onclick="runAddReservation()">發佈預約</button>
+            </div>
+            <div id="reserve-box-list" style="font-size:12px; background:rgba(0,0,0,0.3); padding:8px; border-radius:6px; max-height:90px; overflow-y:auto;"></div>
         </div>
     </div>
 
-    <div class="modal-mask" id="previewModal">
-        <div class="modal-shell preview-modal-shell">
-            <button class="modal-close-trigger" onclick="closePreview()">&times;</button>
-            <div class="modal-headline" id="modal-title">👀 線上預覽</div>
-            <div class="preview-body" id="modal-body"></div>
+    <div class="upload-section">
+        <div class="file-drop-zone" onclick="document.getElementById('localFile').click()">
+            <span id="file-tip">📁 點擊選取中轉共享檔案</span>
+            <input type="file" id="localFile" style="display:none;" onchange="updateFileLabel()">
         </div>
-    </div>
-
-    <script>
-        let currentIp = "0.0.0.0";
-        let fileBase64 = "";
-        let targetFileName = "";
+        <button class="upload-btn" onclick="openNoticeModal()">同意條款並安全上傳</button>
         
-        let adminRole = "guest"; 
-        let adminCtrlPassword = ""; // 🛠️ 邏輯修正：本地安全紀錄登入密碼，以便發佈設定時進行金鑰驗證
+        <div id="progress-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="progress-text"></div>
+    </div>
+    
+    <div id="console-log">> 通訊鏈路健全度檢查中...</div>
 
-        // 頁面初始化
-        document.getElementById('platform-title-text').innerText = PLATFORM_NAME;
-        document.getElementById('target-archive-date').valueAsDate = new Date();
-        document.getElementById('footer-text').innerHTML = `&copy; ${START_YEAR} ${OWNER_NAME} All Rights Reserved.`;
+    <div class="list-section">
+        <div class="list-header-bar">
+            <div class="list-title" id="list-box-title">📂 今日中轉共享檔案庫</div>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:12px; opacity:0.8;">歷史穿越：</span>
+                <input type="date" id="targetDateInput" class="date-input" onchange="loadPublicList()">
+            </div>
+        </div>
+        <div id="public-list"></div>
+    </div>
+</div>
+
+<div class="page-footer-hub">
+    <div class="footer-notice-box" id="footer-notice-content">正在下載最新條款須知...</div>
+    <div class="copyright">
+        © <span id="start-year-label"></span> - <span id="current-year"></span> <span id="owner-label"></span> All Rights Reserved.
+    </div>
+</div>
+
+<div id="warnModal" class="modal">
+    <div class="modal-content" style="max-width:480px;">
+        <div class="modal-header" style="background:#7f1d1d; color:#fca5a5;">📢 系統安全維護移除預警</div>
+        <div class="modal-body">
+            <p>因應當前系統硬碟剩餘容量調節，平台已排定自動安全維護程序：</p>
+            <p style="background:rgba(0,0,0,0.2); padding:15px; border-left:4px solid #ef4444; border-radius:4px; font-weight:600;">
+                ⚠️ 歸類在 <span id="warn-limit-date" style="color:#f43f5e;">--</span> 以前的歷史共享檔案，預計將於 <span id="warn-remove-date" style="color:#f43f5e;">--</span> 進行系統自動安全移除。
+            </p>
+            <p style="font-size:12px; opacity:0.7;">請需要保留歷史檔案的成員，在此期限前自行下載至個人本機端備份。</p>
+        </div>
+        <div class="modal-footer" style="justify-content:center; background:#131d31;">
+            <button style="background:#ef4444; color:white; width:100%; padding:11px;" onclick="closeWarnModal()">我知道了</button>
+        </div>
+    </div>
+</div>
+
+<div id="noticeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header" style="color:#38bdf8;">⚠️ 檔案共享傳輸安全與著作權法律協議</div>
+        <div id="display-notice-body" class="modal-body" style="white-space: pre-wrap; color:#e2e8f0;"></div>
+        <div class="modal-footer">
+            <button style="background:#10b981; color:white; padding:12px; font-size:14px;" onclick="executeUploadWithProgress()">我同意，確認著作權屬實並開始上傳</button>
+            <button style="background:transparent; color:#94a3b8; margin-top:8px;" onclick="closeNoticeModal()">不同意 (取消傳輸)</button>
+        </div>
+    </div>
+</div>
+
+<div id="previewModal" class="modal">
+    <div class="modal-content" style="width:95%; height:85%; max-width:850px;">
+        <div class="modal-header">
+            <span id="modal-title" style="color:#38bdf8;">📄 線上中轉預覽</span>
+            <button style="background:#ef4444; color:white; padding:5px 12px;" onclick="closePreview()">關閉預覽</button>
+        </div>
+        <div id="modal-body" style="flex-grow:1; background:#fff;"></div>
+    </div>
+</div>
+
+<script>
+    let currentIp = "0.0.0.0";
+    let adminRole = ""; 
+    let adminUser = ""; 
+    let adminCtrlPassword = ""; 
+    let globalFilesCache = [];
+
+    window.onload = async function() {
         document.body.className = DEFAULT_THEME;
+        document.getElementById('main-title').innerText = `📁 ${PLATFORM_NAME}`;
+        document.getElementById('list-box-title').innerText = `📂 今日${PLATFORM_NAME}庫`;
+        document.getElementById('start-year-label').innerText = START_YEAR;
+        document.getElementById('owner-label').innerText = OWNER_NAME;
+        document.getElementById('current-year').innerText = new Date().getFullYear();
+        
+        const today = new Date();
+        document.getElementById('targetDateInput').value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+        
+        try {
+            let res = await fetch('https://api.ipify.org?format=json');
+            let data = await res.json(); currentIp = data.ip;
+        } catch (e) { currentIp = "未知IP"; }
+        log(`通訊來源偵測 IP：${currentIp}`);
+        
+        await syncSystemStatus();
+        loadPublicList();
+    }
 
-        window.onload = function() {
-            getIpAddress().then(() => {
-                syncSystemStatus();
-            });
-        };
+    function log(text) { document.getElementById('console-log').innerText = `> ${text}`; }
+    
+    function updateFileLabel() {
+        const file = document.getElementById('localFile').files[0];
+        if(file) document.getElementById('file-tip').innerText = `已選定檔案: ${file.name}`;
+    }
 
-        function log(msg) { console.log(`[System Log] ${msg}`); }
-
-        function getIpAddress() {
-            return fetch('https://api.ipify.org?format=json')
-                .then(res => res.json())
-                .then(data => {
-                    currentIp = data.ip;
-                    document.getElementById('detected-ip').innerText = currentIp;
-                })
-                .catch(err => {
-                    log("無法取得公開IP，將啟用防禦性預設IP");
-                    currentIp = "127.0.0.1";
-                    document.getElementById('detected-ip').innerText = currentIp + " (保護模式)";
-                });
-        }
-
-        // 同步拉取後端最新系統狀態（包含容量、公告、主題風格、今日清單）
-        function syncSystemStatus() {
-            log("正在同步後端核心參數資料...");
-            const targetDate = document.getElementById('target-archive-date').value;
-            
-            fetch(`${GAS_URL}?action=get_sys_status&ip=${currentIp}&date=${targetDate}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        document.getElementById('pool-usage-bar').style.width = data.storageRate;
-                        document.getElementById('pool-usage-text').innerText = data.storageRate;
-                        
-                        document.getElementById('notice-text-box').innerText = data.noticeContent;
-                        
-                        document.body.className = data.activeTheme;
-                        document.getElementById('theme-select').value = data.activeTheme;
-                        document.getElementById('edit-notice-text').value = data.noticeContent;
-
-                        renderFileList(data.fileList, adminRole === "supreme");
-                    } else {
-                        log("後端回報同步失敗: " + data.message);
-                    }
-                })
-                .catch(err => log("通訊異常，無法與中轉核心同步: " + err));
-        }
-
-        function loadSharedList() {
-            const targetDate = document.getElementById('target-archive-date').value;
-            fetch(`${GAS_URL}?action=fetch_file_list&date=${targetDate}&ip=${currentIp}`)
-                .then(res => res.json()).then(data => {
-                    if(data.status === "success") {
-                        renderFileList(data.data, adminRole === "supreme");
-                    }
-                });
-        }
-
-        function renderFileList(list, isControlMode) {
-            const listDiv = document.getElementById('shared-list-box');
-            if (!list || list.length === 0) {
-                listDiv.innerHTML = `<div style="text-align:center; opacity:0.5; padding: 30px; font-size:0.95rem;">📅 此歸檔日期查無任何中轉共享檔案紀錄</div>`;
-                return;
-            }
-            let html = "";
-            list.forEach(item => {
-                let maskIp = item.ip;
-                if(maskIp && maskIp !== "0.0.0.0") {
-                    let parts = maskIp.split('.');
-                    if(parts.length === 4) maskIp = `${parts[0]}.${parts[1]}.${parts[2]}.***`;
-                }
-                const showDelete = (isControlMode === true || currentIp === item.ip);
+    async function syncSystemStatus() {
+        try {
+            let res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "get_sys_status" }) });
+            let resData = await res.json();
+            if(resData.status === "success") {
+                let d = resData.data;
+                document.body.className = d.theme;
+                document.getElementById('theme-select').value = d.theme;
                 
-                let googleDownloadUrl = item.url;
-                let googlePreviewUrl = item.viewUrl || item.url;
+                document.getElementById('display-notice-body').innerText = d.notice;
+                document.getElementById('edit-notice-text').value = d.notice;
+                document.getElementById('footer-notice-content').innerText = `【佈局欄與上傳條款】\n${d.notice}`;
+                
+                document.getElementById('sys-status-label').innerText = `🔋 儲存池負載率：${d.storagePercent}%`;
+                if (d.hasActiveReservation === true && !sessionStorage.getItem('warned')) {
+                    document.getElementById('warn-limit-date').innerText = d.limitDateStr;
+                    document.getElementById('warn-remove-date').innerText = d.removeDateStr;
+                    document.getElementById('warnModal').style.display = "flex";
+                }
 
-                html += `
-                    <div class="shared-item">
-                        <div class="item-meta">
-                            <span class="item-title">${item.name}</span>
-                            <span class="item-subtext">來源：${maskIp} | 流水號：${item.id.substring(0,8)}...</span>
-                        </div>
-                        <div class="btn-group">
-                            <button class="view-btn" onclick="openPreview('${item.name}', '${googlePreviewUrl}')">預覽</button>
-                            <button class="download-btn" onclick="window.open('${googleDownloadUrl}')">下載</button>
-                            ${showDelete ? `<button class="del-btn" onclick="runDeleteFile('${item.id}', ${isControlMode})">刪除</button>` : ''}
-                        </div>
-                    </div>
-                `;
-            });
-            listDiv.innerHTML = html;
-        }
+                let rDiv = document.getElementById('reserve-box-list');
+                if (d.reservations.length === 0) {
+                    rDiv.innerHTML = `<span style="opacity:0.6;">目前無任何進行中維護預約項目。</span>`;
+                } else {
+                    let html = "";
+                    d.reservations.forEach(r => {
+                        html += `
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; padding-bottom:3px; border-bottom:1px solid rgba(255,255,255,0.1);">
+                                <span>🗓️ [${r.user}]發佈：項目預計於 ${r.expShow} 移除</span>
+                                ${adminRole ? `<span style="color:#ef4444; cursor:pointer; font-weight:bold;" onclick="runDeleteReservation('${r.id}')">[ 撤銷 ]</span>` : ''}
+                            </div>
+                        `;
+                    });
+                    rDiv.innerHTML = html;
+                }
+            }
+        } catch(e){}
+    }
 
-        function openPreview(fileName, previewUrl) {
-            document.getElementById('modal-title').innerText = `👀 線上預覽：${fileName}`;
-            document.getElementById('modal-body').innerHTML = `<iframe src="${previewUrl}" style="width:100%; height:100%; border:none;"></iframe>`;
-            document.getElementById('previewModal').style.display = "flex";
-        }
-        function closePreview() { document.getElementById('previewModal').style.display = "none"; document.getElementById('modal-body').innerHTML = ""; }
-
-        function onFileSelected(input) {
-            if (input.files.length === 0) return;
-            const file = input.files[0];
-            targetFileName = file.name;
-            
-            document.getElementById('upload-status-text').innerHTML = `<span style="color:#10b981; font-weight:700;">已就緒：${targetFileName}</span>`;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                fileBase64 = e.target.result.split(',')[1];
-                document.getElementById('upload-trigger-btn').disabled = false;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function startSecureUpload() {
-            const btn = document.getElementById('upload-trigger-btn');
-            btn.disabled = true;
-            btn.innerText = "加密安全傳輸中，請勿關閉網頁...";
-            
-            fetch(GAS_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: "upload_file",
-                    fileName: targetFileName,
-                    fileData: fileBase64,
-                    ip: currentIp
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert(data.message);
-                fileBase64 = ""; targetFileName = "";
-                document.getElementById('file-selector').value = "";
-                document.getElementById('upload-status-text').innerText = "點擊此處選擇要共享的中轉檔案";
+    function triggerAdminLogin() {
+        if (adminRole) return logoutAdmin();
+        let u = prompt("管理員帳號:"); if(!u) return;
+        let p = prompt("管理員密碼:"); if(!p) return;
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "admin_login", username: u, password: p }) })
+        .then(res => res.json()).then(data => {
+            if (data.status === "success") {
+                adminRole = data.data.role;
+                adminUser = data.data.user;
+                adminCtrlPassword = p;
+     
+                document.getElementById('auth-btn').innerText = "登出安全模式";
+                document.getElementById('mgr-panel-btn').style.display = "inline-block";
+                document.getElementById('role-title').innerText = (adminRole === "supreme") ? `最高主權: ${adminUser}` : `受託管理員: ${adminUser}`;
+                document.getElementById('supreme-only-zone').style.display = (adminRole === "supreme") ? "block" : "none";
+   
+                alert("解鎖完畢！已進入控制台後台模式。");
+                toggleControlPanel(true);
+                if(adminRole === "supreme") syncSubAdminList();
                 syncSystemStatus();
-            })
-            .catch(err => {
-                alert("❌ 傳輸核心異常，檔案中轉同步失敗。");
-                btn.disabled = false;
-                btn.innerText = "同意規範並安全上傳";
-            });
-        }
+                renderList(globalFilesCache);
+            } else { alert(data.message); }
+        });
+    }
 
-        function runDeleteFile(fileId, isCtrlMode) {
-            if(!confirm("確定要安全移除此共享檔案嗎？")) return;
+    function toggleControlPanel(forceOpen = false) {
+        let p = document.getElementById('control-panel');
+        if (forceOpen) p.style.display = "block";
+        else p.style.display = (p.style.display === "block") ? "none" : "block";
+    }
+
+    function logoutAdmin() {
+        adminRole = ""; adminUser = ""; adminCtrlPassword = "";
+        document.getElementById('auth-btn').innerText = "管理員登入";
+        document.getElementById('mgr-panel-btn').style.display = "none";
+        document.getElementById('control-panel').style.display = "none";
+        alert("已安全登出後台管理環境。");
+        syncSystemStatus();
+        renderList(globalFilesCache);
+    }
+
+    function saveSysSettings() {
+        let th = document.getElementById('theme-select').value;
+        let nt = document.getElementById('edit-notice-text').value;
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "update_sys_settings", supremePassword: adminCtrlPassword, theme: th, notice: nt }) })
+        .then(res => res.json()).then(data => { alert(data.message); syncSystemStatus(); });
+    }
+
+    function runChangeUsername() {
+        let newU = document.getElementById('ch-new-username').value.trim();
+        let confirmU = document.getElementById('ch-new-username-confirm').value.trim();
+        if(!newU || !confirmU) return alert("請完整輸入全新的帳號名稱欄位！");
+        if(newU !== confirmU) return alert("❌ 兩次輸入的全新帳號名不相符，請重新確認！");
+        fetch(GAS_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ action: "force_change_username", role: adminRole, currentUsername: adminUser, newUsername: newU }) 
+        })
+        .then(res => res.json()).then(data => { 
+            alert(data.message); 
+            if(data.status === "success") logoutAdmin(); 
+        });
+    }
+
+    function runChangePasswordOnly() {
+        let newP = document.getElementById('ch-new-password').value.trim();
+        let confirmP = document.getElementById('ch-new-password-confirm').value.trim();
+        if(!newP || !confirmP) return alert("請完整輸入全新的密碼欄位！");
+        if(newP !== confirmP) return alert("❌ 兩次輸入的全新密碼不相符，請重新確認！");
+        fetch(GAS_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ action: "force_change_password", role: adminRole, currentUsername: adminUser, newPassword: newP }) 
+        })
+        .then(res => res.json()).then(data => { 
+            alert(data.message); 
+            if(data.status === "success") logoutAdmin(); 
+        });
+    }
+
+    function runRegisterSubAdmin() {
+        let nu = document.getElementById('new-admin-u').value;
+        let np = document.getElementById('new-admin-p').value;
+        if(!nu || !np) return alert("欄位不可留白！");
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "register_sub_admin", supremePassword: adminCtrlPassword, newUsername: nu, newPassword: np }) })
+        .then(res => res.json()).then(data => {
+            alert(data.message);
+            document.getElementById('new-admin-u').value = "";
+            document.getElementById('new-admin-p').value = "";
+            syncSubAdminList();
+        });
+    }
+
+    function syncSubAdminList() {
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "get_sub_admins", supremePassword: adminCtrlPassword }) })
+        .then(res => res.json()).then(resData => {
+            if(resData.status === "success") {
+                let div = document.getElementById('sub-admins-card-list');
+                if(resData.data.length === 0) { div.innerHTML = "<span style='opacity:0.6;'>目前發卡庫中尚無管理授權人。</span>"; return; }
+                let html = "";
+                resData.data.forEach(sub => {
+                    html += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+                            <span>👤 帳號: <b>${sub.username}</b> (核發日: ${sub.createDate})</span>
+                            <button class="del-btn" style="padding:2px 8px; font-size:11px;" onclick="runDeleteSubAdmin('${sub.username}')">註銷</button>
+                        </div>
+                    `;
+                });
+                div.innerHTML = html;
+            }
+        });
+    }
+
+    function runDeleteSubAdmin(targetU) {
+        if(!confirm(`⚠️ 確定要直接撤銷登除管理員 [${targetU}] 的權限嗎？`)) return;
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "delete_sub_admin", supremePassword: adminCtrlPassword, targetUsername: targetU }) })
+        .then(res => res.json()).then(data => { alert(data.message); syncSubAdminList(); });
+    }
+
+    function runAddReservation() {
+        let sel = document.getElementById('reserve-duration');
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "add_reservation", username: adminUser, hours: sel.value, durationText: sel.options[sel.selectedIndex].text }) })
+        .then(res => res.json()).then(data => { alert(data.message); syncSystemStatus(); });
+    }
+
+    function runDeleteReservation(resId) {
+        if(!confirm("確定要手動撤銷此排程預約嗎？")) return;
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "delete_reservation", reserveId: resId, operator: adminUser }) })
+        .then(res => res.json()).then(data => { alert(data.message); syncSystemStatus(); });
+    }
+
+    function closeWarnModal() { document.getElementById('warnModal').style.display = "none"; sessionStorage.setItem('warned', 'true'); }
+    function openNoticeModal() { if(document.getElementById('localFile').files.length === 0) return alert('請先選取您要傳輸的中轉共享檔案！'); document.getElementById('noticeModal').style.display = "flex"; }
+    function closeNoticeModal() { document.getElementById('noticeModal').style.display = "none"; }
+
+    function executeUploadWithProgress() {
+        document.getElementById('noticeModal').style.display = "none";
+        const file = document.getElementById('localFile').files[0];
+        const progContainer = document.getElementById('progress-container');
+        const progBar = document.getElementById('progress-bar');
+        const progText = document.getElementById('progress-text');
+
+        progContainer.style.display = "block";
+        progBar.style.width = "15%";
+        progText.innerText = "⚡ 連線中...";
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            progBar.style.width = "50%";
+            progText.innerText = "📤 上傳中...";
+            
+            const base64Data = e.target.result.split(',')[1];
             fetch(`${GAS_URL}?ip=${currentIp}`, {
                 method: 'POST',
-                body: JSON.stringify({ action: "delete_file", fileId: fileId, isCtrlMode: isCtrlMode })
+                body: JSON.stringify({ action: "upload_local", filename: file.name, mimeType: file.type, base64: base64Data, uploader: adminRole ? adminUser : "一般訪客" })
             })
             .then(res => res.json()).then(data => {
-                alert(data.message);
-                syncSystemStatus();
-            }).catch(err => alert("通訊錯誤，無法移除。"));
-        }
-
-        function openLoginModal() {
-            if (adminRole === "supreme") {
-                document.getElementById('controlModal').style.display = "flex";
-            } else {
-                document.getElementById('loginModal').style.display = "flex";
-            }
-        }
-        function closeModal(id) { document.getElementById(id).style.display = "none"; }
-
-        function runAdminLogin() {
-            const pass = document.getElementById('admin-pass-input').value;
-            if(!pass) return alert("金鑰不可為空");
-            
-            log("正在安全校準管理金鑰...");
-            fetch(GAS_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: "admin_verify", password: pass })
-            })
-            .then(res => res.json())
-            .then(data => {
                 if(data.status === "success") {
-                    adminRole = "supreme";
-                    adminCtrlPassword = pass; // 🛠️ 修正：密碼暫存於前端以便後端核驗
-                    document.getElementById('admin-pass-input').value = "";
-                    closeModal('loginModal');
-                    document.getElementById('ctrl-hub-trigger').innerText = "⚡ 核心控制中";
-                    document.getElementById('controlModal').style.display = "flex";
-                    syncSystemStatus();
+                    progBar.style.width = "100%";
+                    progText.innerText = "✅ 上傳成功！";
+                    setTimeout(() => {
+                        progContainer.style.display = "none";
+                        document.getElementById('localFile').value = "";
+                        document.getElementById('file-tip').innerText = "📁 點擊選取中轉共享檔案";
+                        location.reload(); 
+                    }, 1500);
                 } else {
                     alert(data.message);
+                    progContainer.style.display = "none";
                 }
-            })
-            .catch(err => alert("驗證通訊失敗"));
-        }
-
-        function runAdminLogout() {
-            adminRole = "guest";
-            adminCtrlPassword = "";
-            document.getElementById('ctrl-hub-trigger').innerText = "最高指揮中心";
-            closeModal('controlModal');
-            syncSystemStatus();
-            alert("已安全登出控制總署。");
-        }
-
-        // 🛠️ 核心修正：儲存全局設定函數，完美對接後端的參數名稱
-        function saveSysSettings() {
-            if (adminRole !== "supreme") {
-                alert("權限不足！");
-                return;
-            }
-            const selectedTheme = document.getElementById('theme-select').value;
-            const editedNotice = document.getElementById('edit-notice-text').value;
-            
-            if (!confirm("確定要發佈新的系統設定變更嗎？這將會即時影響所有訪客看到的介面。")) return;
-            
-            log("正在發佈系統設定變更...");
-            fetch(GAS_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: "update_sys_settings",
-                    supremePassword: adminCtrlPassword, // 🛠️ 對接後端的 param.supremePassword 驗證機制
-                    theme: selectedTheme,
-                    notice: editedNotice
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === "success") {
-                    alert(data.message);
-                    closeModal('controlModal');
-                    syncSystemStatus();
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(err => {
-                log("發佈設定時發生錯誤: " + err);
-                alert("通訊異常，設定儲存失敗。");
+            }).catch(err => {
+                alert("上傳失敗，請確認後端 GAS 權限已核准");
+                progContainer.style.display = "none";
             });
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function loadPublicList() {
+        const listDiv = document.getElementById('public-list');
+        const selectedDate = document.getElementById('targetDateInput').value;
+        listDiv.innerHTML = `<p style="font-size:13px; opacity:0.7;">正在同步 [ ${selectedDate} ] 中轉共享目錄清單...</p>`;
+        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "fetch_list", date: selectedDate }) })
+        .then(res => res.json()).then(resData => {
+            if(resData.status === "success") { globalFilesCache = resData.data; renderList(globalFilesCache); }
+        });
+    }
+
+    function renderList(items) {
+        const listDiv = document.getElementById('public-list');
+        const selectedDate = document.getElementById('targetDateInput').value;
+        if(items.length === 0) {
+            listDiv.innerHTML = `<p style="font-size:13px; opacity:0.6;">⚠️ 日期 [ ${selectedDate} ] 中轉共享資料夾內目前沒有檔案。</p>`;
+            return;
         }
-    </script>
+        let html = "";
+        items.forEach(item => {
+            let googlePreviewUrl = `https://drive.google.com/file/d/${item.id}/preview`;
+            let googleDownloadUrl = `https://drive.google.com/uc?export=download&id=${item.id}`;
+            
+            let isControlMode = (adminRole !== "");
+            let showDelete = isControlMode || (item.ip === currentIp);
+
+            html += `
+                <div class="file-item">
+                    <div class="file-info">
+                        <div class="file-name">📄 ${item.name}</div>
+                        <div class="file-meta">上傳端: ${item.uploader} | 真實 IP: ${item.ip}</div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="view-btn" onclick="openPreview('${item.name}', '${googlePreviewUrl}')">預覽</button>
+                        <button class="download-btn" onclick="window.open('${googleDownloadUrl}')">下載</button>
+                        ${showDelete ? `<button class="del-btn" onclick="runDeleteFile('${item.id}', ${isControlMode})">刪除</button>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        listDiv.innerHTML = html;
+    }
+
+    function openPreview(fileName, previewUrl) {
+        document.getElementById('modal-title').innerText = `👀 線上預覽：${fileName}`;
+        document.getElementById('modal-body').innerHTML = `<iframe src="${previewUrl}" style="width:100%; height:100%; border:none;"></iframe>`;
+        document.getElementById('previewModal').style.display = "flex";
+    }
+    function closePreview() { document.getElementById('previewModal').style.display = "none"; document.getElementById('modal-body').innerHTML = ""; }
+
+    function runDeleteFile(fileId, isCtrlMode) {
+        if(!confirm("確定要安全移除此共享檔案嗎？")) return;
+        fetch(`${GAS_URL}?ip=${currentIp}`, {
+            method: 'POST',
+            body: JSON.stringify({ action: "delete_file", fileId: fileId, isCtrlMode: isCtrlMode })
+        })
+        .then(res => res.json()).then(data => { alert(data.message); loadPublicList(); });
+    }
+</script>
 </body>
 </html>
