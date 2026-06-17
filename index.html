@@ -3,582 +3,441 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script>
-        // 1. 請在此貼上您最新部署產生的 GAS 網頁應用程式 URL (結尾必須是 /exec)
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyOMCwxPfAB8mLhsYMumenjrc9NcDz2pQapmPa6H9GBo1jkoCczpH5R6zbeHGHztnkRbg/exec?v=2";
-        
-        // 2. 平台的名稱
-        const PLATFORM_NAME = "資料共享平台";
-        
-        // 3. 版權宣告的創始年份
-        const START_YEAR = "2025";
-        
-        // 4. 版權所有人姓名
-        const OWNER_NAME = "施柏謙";
-        
-        // 5. 預設載入的背景季節風格 (spring, summer, autumn, winter)
-        const DEFAULT_THEME = "summer";
-    </script>
     <title>資料共享平台</title>
+    <script>
+        // =========================================================================
+        // ✍️ 【最上層設定區】請在此處貼上你最新部署產生的正式 GAS 網址 (結尾必須是 /exec)
+        // =========================================================================
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwlCqMugoYly1yMCE1Oaz2znDhf0dbG0_lco7tPLQIlcRqFoaCtEcdeU5yRi93Hn_r5Bg/exec";
+        
+        const PLATFORM_NAME = "資料共享平台";
+        const START_YEAR = "2025";
+        const OWNER_NAME = "施柏謙";
+        const DEFAULT_THEME = "summer"; // 🌟 預設強制鎖定你最喜歡的夏日深藍海洋風格
+    </script>
     <style>
-        :root { --card: rgba(15, 23, 42, 0.45); --accent: #38bdf8; --text: #f8fafc; --text-muted: #cbd5e1; }
-        
-        body.spring { background: linear-gradient(135deg, #e8f5e9 0%, #fce4ec 100%); color: #1b5e20; }
-        body.summer { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: #f8fafc; }
-        body.autumn { background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); color: #e65100; }
-        body.winter { background: linear-gradient(135deg, #eceff1 0%, #cfd8dc 100%); color: #263238; }
+        :root { 
+            --card: rgba(15, 23, 42, 0.45); 
+            --accent: #38bdf8; 
+            --text: #f8fafc; 
+            --text-muted: #cbd5e1; 
+        }
 
-        body { font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; transition: background 0.8s ease; }
-        .dashboard { max-width: 800px; width: 100%; background: var(--card); border-radius: 20px; padding: 30px; box-sizing: border-box; backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.25); color: inherit; position: relative; margin-bottom: 20px; }
+        /* 夏日深藍海洋風格 */
+        body { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); 
+            color: #f8fafc; 
+            font-family: system-ui, -apple-system, sans-serif; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            transition: background 0.8s ease; 
+        }
+
+        .dashboard { 
+            max-width: 800px; 
+            width: 100%; 
+            background: var(--card); 
+            border-radius: 20px; 
+            padding: 30px; 
+            box-sizing: border-box; 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+        }
+
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+        }
+
+        .storage-badge { 
+            background: rgba(255,255,255,0.1); 
+            padding: 8px 16px; 
+            border-radius: 30px; 
+            font-size: 14px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+
+        .storage-bar { 
+            width: 60px; 
+            height: 6px; 
+            background: rgba(255,255,255,0.2); 
+            border-radius: 3px; 
+            overflow: hidden; 
+        }
+
+        .storage-progress { 
+            height: 100%; 
+            background: #22c55e; 
+            width: 0%; 
+            transition: width 0.5s ease; 
+        }
+
+        .main-title { 
+            text-align: center; 
+            font-size: 32px; 
+            margin: 20px 0 30px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 12px; 
+            color: var(--accent);
+        }
+
+        .upload-zone { 
+            border: 2px dashed rgba(255,255,255,0.2); 
+            border-radius: 16px; 
+            padding: 40px 20px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            background: rgba(255,255,255,0.02); 
+            margin-bottom: 25px;
+        }
+
+        .upload-zone:hover { 
+            border-color: var(--accent); 
+            background: rgba(56, 189, 248, 0.05); 
+        }
+
+        .file-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--accent);
+            word-break: break-all;
+        }
+
+        .btn-primary { 
+            width: 100%; 
+            background: #0ea5e9; 
+            color: white; 
+            border: none; 
+            padding: 14px; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: background 0.2s; 
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); 
+        }
+
+        .btn-primary:hover:not(:disabled) { background: #0284c7; }
+        .btn-primary:disabled { background: #64748b; cursor: not-allowed; box-shadow: none; }
+
+        .ip-tracker { 
+            background: rgba(0,0,0,0.2); 
+            border-left: 4px solid var(--accent); 
+            padding: 12px 16px; 
+            border-radius: 0 8px 8px 0; 
+            font-size: 13px; 
+            margin-bottom: 30px; 
+            font-family: monospace; 
+            color: var(--text-muted);
+        }
+
+        .section-title { 
+            font-size: 18px; 
+            margin-bottom: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            color: var(--accent);
+        }
+
+        .date-picker-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        .date-picker {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .file-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
         
-        h1 { font-size: 26px; text-align: center; margin: 0 0 25px 0; letter-spacing: 1px; font-weight: 800; }
-        body.summer h1 { color: var(--accent); }
+        .file-item { 
+            background: rgba(255,255,255,0.04); 
+            border: 1px solid rgba(255,255,255,0.05); 
+            border-radius: 12px; 
+            padding: 16px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 15px;
+        }
+
+        .file-meta { flex: 1; min-width: 0; }
+        .file-name { font-weight: 500; margin-bottom: 4px; word-break: break-all; }
+        .file-sub { font-size: 12px; color: var(--text-muted); }
+
+        .file-actions { display: flex; gap: 8px; }
         
-        .top-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.15); padding: 12px 15px; border-radius: 10px; margin-bottom: 25px; font-size: 13px; font-weight: 500; }
-        .top-bar-btns { display: flex; gap: 8px; }
+        .btn-action { 
+            padding: 6px 16px; 
+            border-radius: 8px; 
+            font-size: 14px; 
+            font-weight: 500; 
+            cursor: pointer; 
+            border: none; 
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-preview { background: #0284c7; }
+        .btn-download { background: #22c55e; }
+
+        .notice-card { 
+            background: rgba(255, 255, 255, 0.02); 
+            border: 1px solid rgba(255,255,255,0.05); 
+            border-radius: 12px; 
+            padding: 20px; 
+            font-size: 13px; 
+            line-height: 1.8; 
+            color: var(--text-muted); 
+            white-space: pre-line; 
+        }
+
+        footer { text-align: center; margin-top: 40px; font-size: 12px; color: rgba(255,255,255,0.3); }
         
-        button { border: none; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s ease; }
-        button.admin-btn { background: rgba(255,255,255,0.2); color: inherit; border: 1px solid rgba(255,255,255,0.2); }
-        button.action-btn { background: #6366f1; color: #fff; }
-        button.switch-btn { background: #2563eb; color: #fff; }
-        button.del-btn { background: #ef4444; color: white; }
-        
-        .ctrl-panel { display: none; background: rgba(0, 0, 0, 0.3); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 25px; }
-        .panel-title { font-size: 14px; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; }
-        .input-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-        .input-group input, .input-group select { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; color: inherit; flex-grow: 1; }
-        textarea { width: 100%; background: rgba(0,0,0,0.3); color: inherit; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; height: 110px; margin-bottom: 12px; box-sizing: border-box; font-family: inherit; font-size: 13px; }
-        
-        .upload-section { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 12px; border: 2px dashed rgba(255,255,255,0.2); margin-bottom: 25px; text-align: center; }
-        .file-drop-zone { padding: 25px; background: rgba(0,0,0,0.1); cursor: pointer; border-radius: 10px; font-weight: 600; font-size: 14px; }
-        button.upload-btn { width: 100%; padding: 15px; background: #0ea5e9; color: white; font-size: 15px; border-radius: 10px; margin-top: 15px; box-shadow: 0 4px 12px rgba(14,165,233,0.3); }
-        
-        #progress-container { display: none; margin-top: 20px; background: rgba(0,0,0,0.2); border-radius: 10px; height: 10px; overflow: hidden; position: relative; }
-        #progress-bar { width: 0%; height: 100%; background: #10b981; transition: width 0.4s ease; }
-        #progress-text { font-size: 12px; text-align: center; margin-top: 8px; font-weight: bold; }
-        
-        .list-section { margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 25px; }
-        .list-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .list-title { font-size: 16px; font-weight: bold; }
-        .date-input { background: rgba(0,0,0,0.15); color: inherit; border: 1px solid rgba(255,255,255,0.2); padding: 7px 12px; border-radius: 8px; cursor: pointer; }
-        
-        .file-item { background: rgba(0,0,0,0.12); padding: 15px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 15px; border: 1px solid rgba(255,255,255,0.03); }
-        .file-info { flex-grow: 1; }
-        .file-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; word-break: break-all; }
-        .file-meta { font-size: 11px; opacity: 0.7; }
-        
-        .btn-group { display: flex; gap: 6px; }
-        .btn-group button { padding: 6px 12px; font-size: 12px; }
-        .view-btn { background: #0284c7; color: white; }
-        .download-btn { background: #10b981; color: white; }
-        
-        #console-log { margin-top: 20px; background: rgba(0,0,0,0.2); border-left: 4px solid #0ea5e9; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 12px; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
-        .modal-content { background: #1e293b; color: #f8fafc; border-radius: 16px; width: 90%; max-width: 580px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #334155; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
-        .modal-header { padding: 18px; background: #131d31; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; font-weight: bold; font-size: 15px; }
-        .modal-body { padding: 25px; max-height: 350px; overflow-y: auto; line-height: 1.6; font-size: 14px; }
-        .modal-footer { padding: 15px 25px; background: #131d31; display: flex; flex-direction: column; border-top: 1px solid #334155; }
-        
-        .page-footer-hub { max-width: 800px; width: 100%; text-align: center; padding: 20px; box-sizing: border-box; font-size: 13px; opacity: 0.85; line-height: 1.6; }
-        .footer-notice-box { background: rgba(0, 0, 0, 0.2); padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 15px; font-size: 12px; border: 1px solid rgba(255,255,255,0.05); white-space: pre-wrap; }
-        .copyright { font-size: 12px; font-weight: 600; letter-spacing: 0.5px; opacity: 0.7; }
+        .no-data { text-align: center; padding: 30px; color: var(--text-muted); font-size: 14px; background: rgba(255,255,255,0.01); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.05); }
     </style>
 </head>
 <body>
 
 <div class="dashboard">
-    <div class="top-bar">
-        <span id="sys-status-label">🔋 正在對接中轉核心...</span>
-        <div class="top-bar-btns">
-            <button id="mgr-panel-btn" class="action-btn" style="display:none;" onclick="toggleControlPanel()">管理後台</button>
-            <button id="auth-btn" class="admin-btn" onclick="triggerAdminLogin()">管理員登入</button>
+    <header>
+        <div class="storage-badge">
+            <div class="storage-bar"><div id="storageProgress" class="storage-progress"></div></div>
+            <span>儲存池負載率：<span id="storagePercent">0.0</span>%</span>
         </div>
+        <div style="font-size:14px; color:rgba(255,255,255,0.5);">施柏謙 系統環境</div>
+    </header>
+
+    <div class="main-title">📁 <span id="platformName">資料共享平台</span></div>
+
+    <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" style="display: none;" onchange="handleFileSelect(this)">
+        <div style="font-size: 40px; margin-bottom: 10px;">📥</div>
+        <div style="font-weight: 500;">點擊選取中轉共享檔案</div>
+        <div id="fileInfo" class="file-info"></div>
     </div>
 
-    <h1 id="main-title">📁 資料共享平台</h1>
+    <button id="uploadBtn" class="btn-primary" onclick="handleUpload()">同意條款並安全上傳</button>
 
-    <div id="control-panel" class="ctrl-panel">
-        <div class="panel-title">
-            <span>⚙️ 核心權限群組控制面板 (<span id="role-title">未配置</span>)</span>
-            <span style="color:#ef4444; cursor:pointer; font-weight:bold;" onclick="logoutAdmin()">[ 安全登出 ]</span>
-        </div>
-        
-        <div id="supreme-only-zone" style="display:none; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.2);">
-            <div style="font-size:12px; color:#f59e0b; font-weight:bold; margin-bottom:10px;">👑 最高主權者配置特區：</div>
-            
-            <label style="font-size:12px; display:block; margin-bottom:5px;">線上修訂訪客上傳須知內容（同步更新頁尾）：</label>
-            <textarea id="edit-notice-text" placeholder="請輸入欲顯示的免責與著作權協議條款..."></textarea>
-            
-            <label style="font-size:12px; display:block; margin-bottom:5px;">更換控制台網站季節背景顏色：</label>
-            <div class="input-group">
-                <select id="theme-select">
-                    <option value="spring">🌸 春天風格 (粉嫩新綠)</option>
-                    <option value="summer">☀️ 夏天風格 (極客星空藍)</option>
-                    <option value="autumn">🍁 秋天風格 (溫馨楓葉橘)</option>
-                    <option value="winter">❄️ 冬天風格 (高雅質感灰)</option>
-                </select>
-                <button class="action-btn" style="background:#10b981;" onclick="saveSysSettings()">發佈系統設定變更</button>
-            </div>
-            
-            <div style="font-size:12px; margin:15px 0 5px 0;">核發新管理員權限卡：</div>
-            <div class="input-group">
-                <input type="text" id="new-admin-u" placeholder="新管理員帳號">
-                <input type="password" id="new-admin-p" placeholder="新管理員密碼">
-                <button style="background:#6366f1; color:white;" onclick="runRegisterSubAdmin()">核發註冊</button>
-            </div>
-            <div id="sub-admins-card-list" style="background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; max-height:110px; overflow-y:auto; font-size:12px; margin-top:5px;"></div>
-        </div>
-
-        <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed rgba(255,255,255,0.2);">
-            <div style="font-size:12px; color:#38bdf8; font-weight:bold; margin-bottom:8px;">🔒 帳戶安全更名與重設（免填舊密碼，需二次確認）：</div>
-            
-            <div class="input-group" style="margin-bottom: 10px;">
-                <input type="text" id="ch-new-username" placeholder="輸入全新帳號名稱">
-                <input type="text" id="ch-new-username-confirm" placeholder="再次輸入全新帳號確認">
-                <button class="action-btn" style="background: #eab308;" onclick="runChangeUsername()">變更帳號名</button>
-            </div>
-
-            <div class="input-group">
-                <input type="password" id="ch-new-password" placeholder="輸入全新密碼">
-                <input type="password" id="ch-new-password-confirm" placeholder="再次輸入全新密碼確認">
-                <button class="action-btn" style="background: #ec4899;" onclick="runChangePasswordOnly()">變更密碼</button>
-            </div>
-        </div>
-
-        <div>
-            <span style="font-size:12px; opacity:0.8;">🗓️ 設定預約維護排程項目：</span>
-            <div class="input-group" style="margin-top:5px;">
-                <select id="reserve-duration">
-                    <option value="24">24 小時</option>
-                    <option value="48">2 天</option>
-                    <option value="72">3 天</option>
-                    <option value="96">4 天</option>
-                    <option value="120">5 天</option>
-                    <option value="144">6 天</option>
-                    <option value="168">7 天</option>
-                </select>
-                <button class="switch-btn" onclick="runAddReservation()">發佈預約</button>
-            </div>
-            <div id="reserve-box-list" style="font-size:12px; background:rgba(0,0,0,0.3); padding:8px; border-radius:6px; max-height:90px; overflow-y:auto;"></div>
-        </div>
+    <div class="ip-tracker">
+        🚀 通訊來源偵測 IP：<span id="userIpText">正在探測中...</span>
     </div>
 
-    <div class="upload-section">
-        <div class="file-drop-zone" onclick="document.getElementById('localFile').click()">
-            <span id="file-tip">📁 點擊選取中轉共享檔案</span>
-            <input type="file" id="localFile" style="display:none;" onchange="updateFileLabel()">
-        </div>
-        <button class="upload-btn" onclick="openNoticeModal()">同意條款並安全上傳</button>
-        
-        <div id="progress-container">
-            <div id="progress-bar"></div>
-        </div>
-        <div id="progress-text"></div>
+    <div class="section-title">📂 今日資料共享平台庫</div>
+    <div class="date-picker-container">
+        <input type="date" id="listDatePicker" class="date-picker" onchange="fetchSharedList()">
     </div>
     
-    <div id="console-log">> 通訊鏈路健全度檢查中...</div>
-
-    <div class="list-section">
-        <div class="list-header-bar">
-            <div class="list-title" id="list-box-title">📂 今日中轉共享檔案庫</div>
-            <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-size:12px; opacity:0.8;">歷史穿越：</span>
-                <input type="date" id="targetDateInput" class="date-input" onchange="loadPublicList()">
-            </div>
-        </div>
-        <div id="public-list"></div>
+    <div id="fileList" class="file-list">
+        <div class="no-data">正在連線至大數據中轉核心...</div>
     </div>
+
+    <div class="section-title">📜 【 條款與⚖️傳輸規範 】</div>
+    <div id="noticeContent" class="notice-card">正在下載最新條款須知...</div>
 </div>
 
-<div class="page-footer-hub">
-    <div class="footer-notice-box" id="footer-notice-content">⚠️ 正在與後端核心對接，若畫面持續未載入，請確認後端 GAS 的執行權限是否已設定為「任何人」並核准 DriveApp 權限！</div>
-    <div class="copyright">
-        © <span id="start-year-label"></span> - <span id="current-year"></span> <span id="owner-label"></span> All Rights Reserved.
-    </div>
-</div>
-
-<div id="warnModal" class="modal">
-    <div class="modal-content" style="max-width:480px;">
-        <div class="modal-header" style="background:#7f1d1d; color:#fca5a5;">📢 系統安全維護移除預警</div>
-        <div class="modal-body">
-            <p>因應當前系統硬碟剩餘容量調節，平台已排定自動安全維護程序：</p>
-            <p style="background:rgba(0,0,0,0.2); padding:15px; border-left:4px solid #ef4444; border-radius:4px; font-weight:600;">
-                ⚠️ 歸類在 <span id="warn-limit-date" style="color:#f43f5e;">--</span> 以前的歷史共享檔案，預計將於 <span id="warn-remove-date" style="color:#f43f5e;">--</span> 進行系統自動安全移除。
-            </p>
-            <p style="font-size:12px; opacity:0.7;">請需要保留歷史檔案的成員，在此期限前自行下載至個人本機端備份。</p>
-        </div>
-        <div class="modal-footer" style="justify-content:center; background:#131d31;">
-            <button style="background:#ef4444; color:white; width:100%; padding:11px;" onclick="closeWarnModal()">我知道了</button>
-        </div>
-    </div>
-</div>
-
-<div id="noticeModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header" style="color:#38bdf8;">⚠️ 檔案共享傳輸安全與著作權法律協議</div>
-        <div id="display-notice-body" class="modal-body" style="white-space: pre-wrap; color:#e2e8f0;">讀取中...</div>
-        <div class="modal-footer">
-            <button style="background:#10b981; color:white; padding:12px; font-size:14px;" onclick="executeUploadWithProgress()">我同意，確認著作權屬實並開始上傳</button>
-            <button style="background:transparent; color:#94a3b8; margin-top:8px;" onclick="closeNoticeModal()">不同意 (取消傳輸)</button>
-        </div>
-    </div>
-</div>
-
-<div id="previewModal" class="modal">
-    <div class="modal-content" style="width:95%; height:85%; max-width:850px;">
-        <div class="modal-header">
-            <span id="modal-title" style="color:#38bdf8;">📄 線上中轉預覽</span>
-            <button style="background:#ef4444; color:white; padding:5px 12px;" onclick="closePreview()">關閉預覽</button>
-        </div>
-        <div id="modal-body" style="flex-grow:1; background:#fff;"></div>
-    </div>
-</div>
+<footer>
+    © <span id="copyrightYear">2025</span> - 2026 <span id="ownerName">施柏謙</span> All Rights Reserved.
+</footer>
 
 <script>
-    let currentIp = "0.0.0.0";
-    let adminRole = ""; 
-    let adminUser = ""; 
-    let adminCtrlPassword = ""; 
-    let globalFilesCache = [];
+    let globalUserIp = "0.0.0.0";
 
-    window.onload = async function() {
-        document.body.className = DEFAULT_THEME;
-        document.getElementById('main-title').innerText = `📁 ${PLATFORM_NAME}`;
-        document.getElementById('list-box-title').innerText = `📂 今日${PLATFORM_NAME}庫`;
-        document.getElementById('start-year-label').innerText = START_YEAR;
-        document.getElementById('owner-label').innerText = OWNER_NAME;
-        document.getElementById('current-year').innerText = new Date().getFullYear();
+    // 網頁初始化
+    window.addEventListener('DOMContentLoaded', async () => {
+        // 固定設定文字
+        document.getElementById('platformName').innerText = PLATFORM_NAME;
+        document.getElementById('ownerName').innerText = OWNER_NAME;
+        document.getElementById('copyrightYear').innerText = START_YEAR;
         
-        const today = new Date();
-        document.getElementById('targetDateInput').value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-        
+        // 設定今日日期給外部日期選擇器
+        const todayStr = getTodayString();
+        document.getElementById('listDatePicker').value = todayStr;
+
+        // 1. 同步獲取探測真实公網 IP
         try {
-            let res = await fetch('https://api.ipify.org?format=json');
-            let data = await res.json(); currentIp = data.ip;
-        } catch (e) { currentIp = "未知IP"; }
-        log(`通訊來源偵測 IP：${currentIp}`);
-        
-        await syncSystemStatus();
-        loadPublicList();
+            const ipRes = await fetch('https://api.ipify.org?format=json');
+            const ipData = await ipRes.json();
+            globalUserIp = ipData.ip;
+            document.getElementById('userIpText').innerText = globalUserIp;
+        } catch (e) {
+            document.getElementById('userIpText').innerText = "0.0.0.0 (基本防禦封鎖模式)";
+        }
+
+        // 2. 載入後端核心數據
+        await fetchSystemStatus();
+        await fetchSharedList();
+    });
+
+    // 取得今日日期字串 (YYYY-MM-DD)
+    function getTodayString() {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const r = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${r}`;
     }
 
-    function log(text) { document.getElementById('console-log').innerText = `> ${text}`; }
-    function updateFileLabel() {
-        const file = document.getElementById('localFile').files[0];
-        if(file) document.getElementById('file-tip').innerText = `已選定檔案: ${file.name}`;
-    }
-
-    async function syncSystemStatus() {
+    // 獲取系統容量與最新公告條款
+    async function fetchSystemStatus() {
         try {
-            let res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "get_sys_status" }) });
-            let resData = await res.json();
-            if(resData.status === "success") {
-                let d = resData.data;
-                
-                document.body.className = d.theme;
-                document.getElementById('theme-select').value = d.theme;
-                
-                document.getElementById('display-notice-body').innerText = d.notice;
-                document.getElementById('edit-notice-text').value = d.notice;
-                document.getElementById('footer-notice-content').innerText = `【佈告欄與上傳條款】\n${d.notice}`;
-                
-                document.getElementById('sys-status-label').innerText = `🔋 儲存池負載率：${d.storagePercent}%`;
-                
-                if (d.hasActiveReservation === true && !sessionStorage.getItem('warned')) {
-                    document.getElementById('warn-limit-date').innerText = d.limitDateStr;
-                    document.getElementById('warn-remove-date').innerText = d.removeDateStr;
-                    document.getElementById('warnModal').style.display = "flex";
-                }
-
-                let rDiv = document.getElementById('reserve-box-list');
-                if (d.reservations.length === 0) {
-                    rDiv.innerHTML = `<span style="opacity:0.6;">目前無 any 進行中維護預約項目。</span>`;
-                } else {
-                    let html = "";
-                    d.reservations.forEach(r => {
-                        html += `
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; padding-bottom:3px; border-bottom:1px solid rgba(255,255,255,0.1);">
-                                <span>🗓️ [${r.user}]發佈：項目預計於 ${r.expShow} 移除</span>
-                                ${adminRole ? `<span style="color:#ef4444; cursor:pointer; font-weight:bold;" onclick="runDeleteReservation('${r.id}')">[ 撤銷 ]</span>` : ''}
-                            </div>
-                        `;
-                    });
-                    rDiv.innerHTML = html;
-                }
-            } else {
-                alert("後端核心傳回錯誤：" + resData.message);
+            // 自動加上防快取版本號
+            const res = await fetch(`${GAS_URL}?action=get_sys_status&t=${Date.now()}`);
+            const result = await res.json();
+            if (result.status === "success") {
+                document.getElementById('noticeContent').innerText = result.data.notice;
+                document.getElementById('storagePercent').innerText = result.data.storagePercent;
+                document.getElementById('storageProgress').style.width = result.data.storagePercent + '%';
             }
-        } catch(e){
-            console.error(e);
-            log("🛑 無法連線至後端核心，請確認 GAS 部署網址是否正確，且已設定開放權限！");
+        } catch (err) {
+            document.getElementById('noticeContent').innerText = "❌ 條款載入失敗，請確認 GAS 網址與網路連線狀態。";
         }
     }
 
-    function triggerAdminLogin() {
-        if (adminRole) return logoutAdmin();
-        let u = prompt("管理員帳號:"); if(!u) return;
-        let p = prompt("管理員密碼:"); if(!p) return;
+    // 處理檔案選取視覺回饋
+    function handleFileSelect(input) {
+        const fileInfo = document.getElementById('fileInfo');
+        if (input.files.length > 0) {
+            fileInfo.innerText = `已選取：${input.files[0].name} (${(input.files[0].size/1024/1024).toFixed(2)} MB)`;
+        } else {
+            fileInfo.innerText = "";
+        }
+    }
+
+    // 核心上傳控制（高規格錯誤安全攔截機制）
+    async function handleUpload() {
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
         
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "admin_login", username: u, password: p }) })
-        .then(res => res.json()).then(data => {
-            if (data.status === "success") {
-                adminRole = data.data.role;
-                adminUser = data.data.user;
-                adminCtrlPassword = p;
-                
-                document.getElementById('auth-btn').innerText = "登出安全模式";
-                document.getElementById('mgr-panel-btn').style.display = "inline-block";
-                document.getElementById('role-title').innerText = (adminRole === "supreme") ? `最高主權: ${adminUser}` : `受託管理員: ${adminUser}`;
-                document.getElementById('supreme-only-zone').style.display = (adminRole === "supreme") ? "block" : "none";
-                
-                alert("解鎖完畢！已進入控制台後台模式。");
-                toggleControlPanel(true);
-                if(adminRole === "supreme") syncSubAdminList();
-                syncSystemStatus();
-                renderList(globalFilesCache);
-            } else { alert(data.message); }
-        });
-    }
-
-    function toggleControlPanel(forceOpen = false) {
-        let p = document.getElementById('control-panel');
-        if (forceOpen) p.style.display = "block";
-        else p.style.display = (p.style.display === "block") ? "none" : "block";
-    }
-
-    function logoutAdmin() {
-        adminRole = ""; adminUser = ""; adminCtrlPassword = "";
-        document.getElementById('auth-btn').innerText = "管理員登入";
-        document.getElementById('mgr-panel-btn').style.display = "none";
-        document.getElementById('control-panel').style.display = "none";
-        alert("已安全登出後台管理環境。");
-        syncSystemStatus();
-        renderList(globalFilesCache);
-    }
-
-    function saveSysSettings() {
-        let th = document.getElementById('theme-select').value;
-        let nt = document.getElementById('edit-notice-text').value;
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "update_sys_settings", supremePassword: adminCtrlPassword, theme: th, notice: nt }) })
-        .then(res => res.json()).then(data => { alert(data.message); syncSystemStatus(); });
-    }
-
-    function runChangeUsername() {
-        let newU = document.getElementById('ch-new-username').value.trim();
-        let confirmU = document.getElementById('ch-new-username-confirm').value.trim();
-        if(!newU || !confirmU) return alert("請完整輸入全新的帳號名稱欄位！");
-        if(newU !== confirmU) return alert("❌ 兩次輸入的全新帳號名不相符，請重新確認！");
-        
-        fetch(GAS_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({ 
-                action: "force_change_username", 
-                role: adminRole, 
-                currentUsername: adminUser, 
-                newUsername: newU 
-            }) 
-        })
-        .then(res => res.json()).then(data => { 
-            alert(data.message); 
-            if(data.status === "success") logoutAdmin(); 
-        });
-    }
-
-    function runChangePasswordOnly() {
-        let newP = document.getElementById('ch-new-password').value.trim();
-        let confirmP = document.getElementById('ch-new-password-confirm').value.trim();
-        if(!newP || !confirmP) return alert("請完整輸入全新的密碼欄位！");
-        if(newP !== confirmP) return alert("❌ 兩次輸入的全新密碼不相符，請重新確認！");
-        
-        fetch(GAS_URL, { 
-            method: 'POST', 
-            body: JSON.stringify({ 
-                action: "force_change_password", 
-                role: adminRole, 
-                currentUsername: adminUser, 
-                newPassword: newP 
-            }) 
-        })
-        .then(res => res.json()).then(data => { 
-            alert(data.message); 
-            if(data.status === "success") logoutAdmin(); 
-        });
-    }
-
-    function runRegisterSubAdmin() {
-        let nu = document.getElementById('new-admin-u').value;
-        let np = document.getElementById('new-admin-p').value;
-        if(!nu || !np) return alert("欄位不可留白！");
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "register_sub_admin", supremePassword: adminCtrlPassword, newUsername: nu, newPassword: np }) })
-        .then(res => res.json()).then(data => {
-            alert(data.message);
-            document.getElementById('new-admin-u').value = "";
-            document.getElementById('new-admin-p').value = "";
-            syncSubAdminList();
-        });
-    }
-
-    function syncSubAdminList() {
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "get_sub_admins", supremePassword: adminCtrlPassword }) })
-        .then(res => res.json()).then(resData => {
-            if(resData.status === "success") {
-                let div = document.getElementById('sub-admins-card-list');
-                if(resData.data.length === 0) { div.innerHTML = "<span style='opacity:0.6;'>目前發卡庫中尚無管理授權人。</span>"; return; }
-                let html = "";
-                resData.data.forEach(sub => {
-                    html += `
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
-                            <span>👤 帳號: <b>${sub.username}</b> (核發日: ${sub.createDate})</span>
-                            <button class="del-btn" style="padding:2px 8px; font-size:11px;" onclick="runDeleteSubAdmin('${sub.username}')">註銷</button>
-                        </div>
-                    `;
-                });
-                div.innerHTML = html;
-            }
-        });
-    }
-
-    function runDeleteSubAdmin(targetU) {
-        if(!confirm(`⚠️ 確定要直接撤銷登除管理員 [${targetU}] 的權限嗎？`)) return;
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "delete_sub_admin", supremePassword: adminCtrlPassword, targetUsername: targetU }) })
-        .then(res => res.json()).then(data => { alert(data.message); syncSubAdminList(); });
-    }
-
-    function runAddReservation() {
-        let sel = document.getElementById('reserve-duration');
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "add_reservation", username: adminUser, hours: sel.value, durationText: sel.options[sel.selectedIndex].text }) })
-        .then(res => res.json()).then(data => { alert(data.message); syncSystemStatus(); });
-    }
-
-    function runDeleteReservation(resId) {
-        if(!confirm("確定要手動撤銷此排程預約嗎？")) return;
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "delete_reservation", reserveId: resId, operator: adminUser }) })
-        .then(res => res.json()).then(data => { alert(data.message); syncSystemStatus(); });
-    }
-
-    function closeWarnModal() { document.getElementById('warnModal').style.display = "none"; sessionStorage.setItem('warned', 'true'); }
-    function openNoticeModal() {
-        if(document.getElementById('localFile').files.length === 0) return alert('請先選取您要傳輸的中轉共享檔案！');
-        document.getElementById('noticeModal').style.display = "flex";
-    }
-    function closeNoticeModal() { document.getElementById('noticeModal').style.display = "none"; }
-
-    function executeUploadWithProgress() {
-        document.getElementById('noticeModal').style.display = "none";
-        const file = document.getElementById('localFile').files[0];
-        const progContainer = document.getElementById('progress-container');
-        const progBar = document.getElementById('progress-bar');
-        const progText = document.getElementById('progress-text');
-
-        progContainer.style.display = "block";
-        progBar.style.width = "15%";
-        progText.innerText = "⚡ 連線中...";
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            progBar.style.width = "50%";
-            progText.innerText = "📤 上傳中...";
-            
-            const base64Data = e.target.result.split(',')[1];
-            fetch(`${GAS_URL}?ip=${currentIp}`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: "upload_local", 
-                    filename: file.name, 
-                    mimeType: file.type, 
-                    base64: base64Data, 
-                    uploader: adminRole ? adminUser : "一般訪客" 
-                })
-            })
-            .then(res => res.json()).then(data => {
-                if(data.status === "success") {
-                    progBar.style.width = "100%";
-                    progText.innerText = "✅ 上傳成功！";
-                    
-                    setTimeout(() => {
-                        progContainer.style.display = "none";
-                        document.getElementById('localFile').value = "";
-                        document.getElementById('file-tip').innerText = "📁 點擊選取中轉共享檔案";
-                        loadPublicList(); 
-                    }, 1500);
-                } else {
-                    alert(data.message);
-                    progContainer.style.display = "none";
-                }
-            }).catch(err => {
-                alert("💥 上傳失敗！請確認 GAS 後端授權程序是否已按「允許」，或檢查錯誤訊息彈窗。");
-                progContainer.style.display = "none";
-            });
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function loadPublicList() {
-        const listDiv = document.getElementById('public-list');
-        const selectedDate = document.getElementById('targetDateInput').value;
-        listDiv.innerHTML = `<p style="font-size:13px; opacity:0.7;">正在同步 [ ${selectedDate} ] 中轉共享目錄清單...</p>`;
-        
-        fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action: "fetch_list", date: selectedDate }) })
-        .then(res => res.json()).then(resData => {
-            if(resData.status === "success") { 
-                globalFilesCache = resData.data; 
-                renderList(globalFilesCache); 
-            } else {
-                listDiv.innerHTML = `<p style="font-size:13px; color:#ef4444;">❌ 無法獲取清單：${resData.message}</p>`;
-            }
-        }).catch(err => {
-            listDiv.innerHTML = `<p style="font-size:13px; color:#ef4444;">❌ 核心通訊異常，請至無痕分頁重新讀取測試。</p>`;
-        });
-    }
-
-    function renderList(items) {
-        const listDiv = document.getElementById('public-list');
-        const selectedDate = document.getElementById('targetDateInput').value;
-        if(items.length === 0) {
-            listDiv.innerHTML = `<p style="font-size:13px; opacity:0.6;">⚠️ 日期 [ ${selectedDate} ] 中轉共享資料夾內目前沒有檔案。</p>`;
+        if (fileInput.files.length === 0) {
+            alert("❌ 請先選取您要中轉分享的檔案！");
             return;
         }
-        let html = "";
-        items.forEach(item => {
-            let googlePreviewUrl = `https://drive.google.com/file/d/${item.id}/preview`;
-            let googleDownloadUrl = `https://drive.google.com/uc?export=download&id=${item.id}`;
+
+        const file = fileInput.files[0];
+        
+        // 變更按鈕狀態為「正在上傳中...」並鎖定按鈕防止重複點擊
+        uploadBtn.innerText = "⏳ 正在傳輸至雲端核心中...";
+        uploadBtn.disabled = true;
+
+        try {
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const base64Data = e.target.result.split(',')[1];
+                    const payload = {
+                        action: "upload_local",
+                        filename: file.name,
+                        mimeType: file.type,
+                        base64: base64Data,
+                        uploader: "一般訪客",
+                        ip: globalUserIp
+                    };
+
+                    // 向後端發送請求，網址帶上 IP 以供安全核對
+                    const response = await fetch(`${GAS_URL}?ip=${globalUserIp}`, {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error("Google 閘道中斷連線");
+
+                    const result = await response.json();
+
+                    if (result.status === "success") {
+                        alert("🎉 檔案上傳中轉成功！");
+                        // 恢復按鈕原本樣貌
+                        uploadBtn.innerText = "同意條款並安全上傳";
+                        uploadBtn.disabled = false;
+                        
+                        // 清空檔案選擇器
+                        fileInput.value = "";
+                        document.getElementById('fileInfo').innerText = "";
+                        
+                        // 即時刷新今日中轉清單與容量
+                        await fetchSystemStatus();
+                        await fetchSharedList();
+                    } else {
+                        throw new Error(result.message || "後端處理遭拒");
+                    }
+
+                } catch (innerErr) {
+                    // 🌟 這裡就是最關鍵的修復處！如果發生任何錯誤（包括 DriveApp 存取遭拒），立刻進到這裡！
+                    console.error(innerErr);
+                    alert("❌ 上傳失敗：" + innerErr.message);
+                    uploadBtn.innerText = "💥 上傳失敗，請重新選取上傳"; // 強制更新按鈕文字，不再卡死！
+                    uploadBtn.disabled = false;
+                }
+            };
+            reader.readAsDataURL(file);
+
+        } catch (globalErr) {
+            console.error(globalErr);
+            alert("❌ 瀏覽器檔案讀取異常！");
+            uploadBtn.innerText = "💥 上傳失敗，請重新選取上傳";
+            uploadBtn.disabled = false;
+        }
+    }
+
+    // 載入指定日期的共享項目清單
+    async function fetchSharedList() {
+        const fileListContainer = document.getElementById('fileList');
+        const targetDate = document.getElementById('listDatePicker').value;
+        
+        fileListContainer.innerHTML = '<div class="no-data">⏳ 正在同步今日核心資料庫清單...</div>';
+
+        try {
+            const payload = { action: "fetch_list", date: targetDate };
+            const response = await fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
             
-            let isControlMode = (adminRole !== "");
-            let showDelete = isControlMode || (item.ip === currentIp);
-
-            html += `
-                <div class="file-item">
-                    <div class="file-info">
-                        <div class="file-name">📄 ${item.name}</div>
-                        <div class="file-meta">上傳者: <b>${item.uploader}</b> | 真實 IP: ${item.ip}</div>
-                    </div>
-                    <div class="btn-group">
-                        <button class="view-btn" onclick="openPreview('${item.name}', '${googlePreviewUrl}')">預覽</button>
-                        <button class="download-btn" onclick="window.open('${googleDownloadUrl}')">下載</button>
-                        ${showDelete ? `<button class="del-btn" onclick="runDeleteFile('${item.id}', ${isControlMode})">刪除</button>` : ''}
-                    </div>
-                </div>
-            `;
-        });
-        listDiv.innerHTML = html;
-    }
-
-    function openPreview(fileName, previewUrl) {
-        document.getElementById('modal-title').innerText = `👀 線上預覽：${fileName}`;
-        document.getElementById('modal-body').innerHTML = `<iframe src="${previewUrl}" style="width:100%; height:100%; border:none;"></iframe>`;
-        document.getElementById('previewModal').style.display = "flex";
-    }
-    function closePreview() { document.getElementById('previewModal').style.display = "none"; document.getElementById('modal-body').innerHTML = ""; }
-
-    function runDeleteFile(fileId, isCtrlMode) {
-        if(!confirm("確定要安全移除此共享檔案嗎？")) return;
-        fetch(`${GAS_URL}?ip=${currentIp}`, {
-            method: 'POST',
-            body: JSON.stringify({ action: "delete_file", fileId: fileId, isCtrlMode: isCtrlMode })
-        })
-        .then(res => res.json()).then(data => { alert(data.message); loadPublicList(); });
+            if (result.status === "success" && result.data.length > 0) {
+                fileListContainer.innerHTML = ""; // 清空文字
+                result.data.forEach(item => {
+                    const itemHtml = `
+                        <div class="file-item">
+                            <div class="file-meta">
+                                <div class="file-name">📄 ${item.name}</div>
+                                <div class="file-sub">上傳者：${item.uploader} | 真實 IP: ${item.ip}</div>
+                            </div>
+                            <div class="file-actions">
+                                <a href="${item.viewUrl}" target="_blank" class="btn-action btn-preview">預覽</a>
+                                <a href="${item.url}" target="_blank" class="btn-action btn-download">下載</a>
+                            </div>
+                        </div>
+                    `;
+                    fileListContainer.insertAdjacentHTML('beforeend', itemHtml);
+                });
+            } else {
+                fileListContainer.innerHTML = `<div class="no-data">⚠️ 日期 [ ${targetDate} ] 中轉共享庫內目前無任何檔案。</div>`;
+            }
+        } catch (err) {
+            fileListContainer.innerHTML = '<div class="no-data">❌ 無法同步資料清單，請檢查後端連線。</div>';
+        }
     }
 </script>
 
