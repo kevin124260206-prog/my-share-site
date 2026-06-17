@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>免費資料共享轉運站</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); background-color: #f9f9f9; border-radius: 8px; }
+        input, button { width: 100%; margin: 10px 0; padding: 12px; box-sizing: border-box; border-radius: 4px; border: 1px solid #ccc; }
+        button { background-color: #4CAF50; color: white; border: none; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background-color: #45a049; }
+        #status { margin-top: 15px; font-weight: bold; color: #333; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <h2>上傳檔案到 Google 雲端</h2>
+    <input type="file" id="myFile">
+    <button onclick="uploadFile()">開始上傳</button>
+    <p id="status"></p>
+
+    <script>
+        // ⚠️ 這裡先放空字串，等下一步拿到 Google Apps Script 網址後再回來補上
+        const GAS_URL = "";
+
+        function uploadFile() {
+            const fileInput = document.getElementById('myFile');
+            const statusText = document.getElementById('status');
+            
+            if (fileInput.files.length === 0) {
+                alert('請先選擇檔案！');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            statusText.innerText = "檔案讀取中...";
+
+            reader.onload = function(e) {
+                const base64Data = e.target.result.split(',')[1];
+                const payload = {
+                    filename: file.name,
+                    mimeType: file.type,
+                    base64: base64Data
+                };
+
+                statusText.innerText = "上傳中，請稍候...";
+
+                if (!GAS_URL) {
+                    statusText.innerText = "❌ 錯誤：尚未設定 Google Apps Script 網址！";
+                    return;
+                }
+
+                fetch(GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === "success") {
+                        statusText.innerHTML = `🎉 上傳成功！<br><a href="${data.fileUrl}" target="_blank">在雲端硬碟中檢視</a>`;
+                    } else {
+                        statusText.innerText = "❌ 上傳失敗：" + data.message;
+                    }
+                })
+                .catch(err => {
+                    statusText.innerText = "❌ 連線錯誤：" + err;
+                });
+            };
+
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
