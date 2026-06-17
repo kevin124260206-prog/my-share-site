@@ -8,13 +8,13 @@
         // ==========================================
         // ✍️ 【最上層：前端自訂參數填寫區】
         // ==========================================
-        // 1. 請在此貼上您「重新部署後」產生的最新 GAS 網頁應用程式 URL
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwwvGsXDyb9nqLx3OVXLD3nlgYnV-KO8Ex-vB9NJWKEepLrcAZHfddxGZRDtB3ISXPxjg/exec";
+        // 1. 請在此貼上您「重新部署後」產生的最新 GAS 網頁應用程式 URL (必需是 /exec 結尾)
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxvLJYZf-O3vWfiLnHV7jZTXHrmcRNr69jyEGQPVOTe9cORTTCsKjrr6YO1nmh33M7K8A/exec";
         
         // 2. 平台的名稱
         const PLATFORM_NAME = "資料共享平台";
         
-        // 3. 版權宣告的創始年份
+        // 3. 版權宣告的創創始年份
         const START_YEAR = "2025";
         
         // 4. 版權所有人姓名
@@ -218,7 +218,7 @@
         </div>
         <div class="modal-body">
             <div class="form-row">
-                <label>代表姓名 (顯示於上傳、發佈項目身分)</label>
+                <label>代表姓名 (純用於記錄並顯示是哪位人員操作)</label>
                 <input type="text" id="login-name-input" placeholder="請輸入您想要顯示的身分姓名...">
             </div>
             <div class="form-row">
@@ -278,7 +278,7 @@
     let currentIp = "0.0.0.0";
     let adminRole = ""; 
     let adminUser = ""; 
-    let adminRealName = "一般訪客"; // 這個值會在登入成功後，被設定為您輸入的代表姓名
+    let adminRealName = "一般訪客"; // 預設身份，登入後將被覆蓋為您輸入的代表姓名
     let adminCtrlPassword = ""; 
     let globalFilesCache = [];
 
@@ -332,7 +332,7 @@
 
                 let rDiv = document.getElementById('reserve-box-list');
                 if (d.reservations.length === 0) {
-                    rDiv.innerHTML = `<span style="opacity:0.6;">目前無 any 進行中維護預約項目。</span>`;
+                    rDiv.innerHTML = `<span style="opacity:0.6;">目前無任何進行中維護預約項目。</span>`;
                 } else {
                     let html = "";
                     d.reservations.forEach(r => {
@@ -355,14 +355,14 @@
     }
     function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
-    // 🛠️ 精準對接：登入不再強配姓名，姓名僅作純顯示
+    // 🔐 管理員驗證與身份註冊
     function runAdminLogin() {
         let nameInput = document.getElementById('login-name-input').value.trim();
         let u = document.getElementById('login-user-input').value.trim();
         let p = document.getElementById('login-pass-input').value.trim();
         
         if(!nameInput) {
-            alert("❌ 請輸入代表姓名，這將用於記錄是誰發佈或上傳項目！");
+            alert("❌ 請輸入代表姓名！這將純粹用於記錄或顯示您稍後發佈、上傳項目的操作者身分。");
             return;
         }
         if(!u || !p) {
@@ -379,7 +379,7 @@
             if (data.status === "success") {
                 adminRole = data.data.role;
                 adminUser = data.data.user;
-                adminRealName = nameInput; // 🎯 核心更正：直接採用輸入的姓名作為目前的顯示身分
+                adminRealName = nameInput; // 🎯 核心更正：直接採用輸入的姓名當作目前對外顯示的身份
                 adminCtrlPassword = p;
      
                 document.getElementById('auth-btn').innerText = "登出安全模式";
@@ -387,7 +387,7 @@
                 document.getElementById('role-title').innerText = (adminRole === "supreme") ? `最高主權: ${adminRealName}` : `受託管理員: ${adminRealName}`;
                 document.getElementById('supreme-only-zone').style.display = (adminRole === "supreme") ? "block" : "none";
    
-                alert(`🎉 驗證完畢！歡迎 [${adminRealName}] 進入控制台後台模式。`);
+                alert(`🎉 驗證成功！歡迎 [${adminRealName}] 進入控制台後台模式。`);
                 closeModal('loginModal');
                 
                 document.getElementById('login-name-input').value = "";
@@ -401,7 +401,7 @@
             } else { 
                 alert(data.message); 
             }
-        }).catch(err => alert("連線核心伺服器失敗，請確認網路或 GAS 網址是否正確。"));
+        }).catch(err => alert("連線核心伺服器失敗，請確認網路或後端 GAS 設定。"));
     }
 
     function toggleControlPanel(forceOpen = false) {
@@ -549,7 +549,7 @@
                     progContainer.style.display = "none";
                 }
             }).catch(err => {
-                alert("上傳失敗，請確認後端 GAS 權限已核准");
+                alert("上傳失敗，請確認後端 GAS 存取權限已公開核准。");
                 progContainer.style.display = "none";
             });
         };
